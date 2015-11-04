@@ -8,5 +8,3 @@ This project is for a class called 'Software Engineering'. For this assignment w
 Some additional features will be mentioned later.
 
 We use the 'Scrum'-method for this software and we use the Scrumwise software to maintain a digital copy of the Scrumboard.
-
-Test edit
