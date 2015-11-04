@@ -8,3 +8,16 @@ This project is for a class called 'Software Engineering'. For this assignment w
 Some additional features will be mentioned later.
 
 We use the 'Scrum'-method for this software and we use the Scrumwise software to maintain a digital copy of the Scrumboard.
+
+To my Team
+----------
+Ik heb even een test account gemaakt om te kijken hoe het voor jullie zou moeten werken. Dus wat je doet:
+
+* Fork de branch naar je eigen account. Dan kan je lekker wijzigingen maken en doen wat je wilt.
+* Dan ga je naar het project op onze Team-pagina.
+* Open een pull-request en 'compare across forks'.
+* Dan kan je je reqúest maken en vul je even kort in wat het fixt of toevoegt enzo.
+* Dan kunnen anderen op je request reageren of wat dan ook.
+* Uiteindelijk kunnen we dan de wijziging opnemen in het project.
+
+Succes!
