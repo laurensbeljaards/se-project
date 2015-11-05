@@ -51,9 +51,9 @@ function fillBadgeBar() {
         li.className = "badge";
         var badgeBar = document.getElementById("badgeBar");
         if (i < badgesArray.length) {
-            li.style.backgroundImage = 'url(css/Badges/'+badgesArray[i]+'_Icon.jpg)';
+            li.style.backgroundImage = 'url(Badges/'+badgesArray[i]+'_Icon.jpg)';
         } else {
-            li.style.backgroundImage = 'url(css/Badges/Locked_Icon.jpg)';
+            li.style.backgroundImage = 'url(Badges/Locked_Icon.jpg)';
         }
         badgeBar.appendChild(li);
     }
