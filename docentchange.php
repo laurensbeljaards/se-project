@@ -1,36 +1,36 @@
 <?php
-require_once($BASEDIR . 'config.php');
 include 'header/header.php';
 
+$server = 'mysql.liacs.leidenuniv.nl'; //load the database
+$username = 's1525670'; 
+$password = 'v7saivRR'; 
+$database = 's1525670';
 $conn = new mysqli($server, $username, $password, $database);
-
 if($conn->connect_errno) {
     die('Could not connect: ' .$mysqli->connect_error);
 }
-
 ?>
-
-<?php 
-$opdrid = '6';
+<?php //$opdrid = $_GET["opdr"]; 
+$opdrid='6';
 $sql = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
-$currentValues = $conn->query($sql);
+$currentvalues = $conn->query($sql);
 echo 'De huidige waardes van deze opdracht zijn, klik op Save om deze te wijzigen'.'<br />';
-if($currentValues->num_rows > 0){
-	while($row = $currentValues->fetch_assoc()){
-		$name = $row["naam"];
-		$description = $row["description"];
-		$level = $row["moeilijkheidsgraad"];
-		$category = $row["categorie"];
-		$requirements = $row["requirements"];
-		$template = $row["templatecode"];
-	}
-} else {
-	echo 'Deze opdracht-id is (nog) niet opgeslagen!';
-}
+if($currentvalues->num_rows > 0){
+            while($row = $currentvalues->fetch_assoc()){
+				$name = $row["naam"];
+				$description = $row["description"];
+				$level = $row["moeilijkheidsgraad"];
+				$category = $row["categorie"];
+				$requirements = $row["requirements"];
+				$template = $row["templatecode"];
+			}
+    }else{
+		echo 'Deze opdracht-id is nog niet opgeslagen!';
+    }
 ?>
 
 <?php
-	if(isset($_POST['submitAll'])) {
+	if($_POST['submitAll'] == "Save") {
 		if(isset($_POST['name'])){
 			$name = $_POST['name'];
 			$sql = "UPDATE opdrachten SET naam = '{$name}' WHERE id = '{$opdrid}'";
@@ -62,7 +62,6 @@ if($currentValues->num_rows > 0){
 			$conn->query($sql); //update the database
 		}
 	}
-mysqli_close($conn);
 ?>
 
 <form action="docentchange.php" name="formvalues" method="post">
@@ -82,7 +81,7 @@ mysqli_close($conn);
 	<input type="text" name="requirements" value="<?php echo $requirements; ?>"/>
 	<br />
 	Template code:
-	<textarea rows="10" cols="40" name="template" id="textarea" class="codetextarea"><?php echo $template; ?></textarea>
+	<textarea rows="10" cols="60" name="template" id="textarea" class="codetextarea"><?php echo $template; ?></textarea>
 	<br />
 	<input type="submit" name="submitAll" value="Save" />
 </form>

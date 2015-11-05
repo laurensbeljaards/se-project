@@ -8,7 +8,7 @@
 	//Database properties:
 	$server = 'mysql.liacs.leidenuniv.nl';
 	$username = 's1525670'; 
-	$password = 'v7saivRR'; 
+	$password = 'PLACEHOLDER'; 
 	
 	if ($password == 'PLACEHOLDER') {
 		echo "You forgot to change the database password, you moron!!";
