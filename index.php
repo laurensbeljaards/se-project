@@ -1,22 +1,18 @@
 <?php
-ini_set('display_startup_errors',1);
-ini_set('display_errors',1);
-error_reporting(-1);
+require_once($BASEDIR . 'config.php');
 
-include 'header/header.php';
+include $BASEDIR . 'header/header.php';
 
-$server = 'mysql.liacs.leidenuniv.nl'; //load the database
-$username = 's1525670'; 
-$password = 'v7saivRR'; 
-$database = 's1525670';
 $conn = new mysqli($server, $username, $password, $database);
 if($conn->connect_errno) {
     die('Could not connect: ' .$conn->connect_error);
 }
+
 $sql = "SELECT * FROM opdrachten";
 $result = $conn->query($sql);
 
 $opdrid = $_GET["opdr"];
+$selectedAssignment = $opdrid;
 
 $selectreq = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
 $reqresult = $conn->query($selectreq);
@@ -24,18 +20,7 @@ $reqresult = $conn->query($selectreq);
 $sql = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
 $templateResult = $conn->query($selectreq);
 $templateCode = $templateResult->fetch_assoc();
-
 $templateCode = $templateCode["templatecode"];
-
-//USER DATA
-if (!isset($_COOKIE["studentid"])) {
-	$studentid = 1234567;
-} else {
-	$studentid = $_COOKIE["studentid"];
-}
-
-
-$selectedAssignment = $opdrid;
 	
 //check if user already saved this assignment
 $sql = "SELECT * FROM `student_opdracht` WHERE `student_id` = " . $studentid . " AND `opdracht_id` = " . $selectedAssignment . ";";
