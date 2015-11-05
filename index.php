@@ -1,35 +1,31 @@
 <?php
-include 'header/header.php';
+require_once($BASEDIR . 'config.php');
 
-$server = 'mysql.liacs.leidenuniv.nl'; //load the database
-$username = 's1525670'; 
-$password = 'v7saivRR'; 
-$database = 's1525670';
+include $BASEDIR . 'header/header.php';
+
 $conn = new mysqli($server, $username, $password, $database);
-if($mysqli->connect_errno) {
-    die('Could not connect: ' .$mysqli->connect_error);
+if($conn->connect_errno) {
+    die('Could not connect: ' .$conn->connect_error);
 }
+
 $sql = "SELECT * FROM opdrachten";
 $result = $conn->query($sql);
 
 $opdrid = $_GET["opdr"];
+$selectedAssignment = $opdrid;
 
 $selectreq = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
 $reqresult = $conn->query($selectreq);
 
-//USER DATA
-if (!isset($_COOKIE["studentid"])) {
-	$studentid = 1234567;
-} else {
-	$studentid = $_COOKIE["studentid"];
-}
-
-
-$selectedAssignment = $opdrid;
+$sql = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
+$templateResult = $conn->query($selectreq);
+$templateCode = $templateResult->fetch_assoc();
+$templateCode = $templateCode["templatecode"];
 	
 //check if user already saved this assignment
 $sql = "SELECT * FROM `student_opdracht` WHERE `student_id` = " . $studentid . " AND `opdracht_id` = " . $selectedAssignment . ";";
 $alreadySaved = $conn->query($sql);
+
 if (!$alreadySaved) {
 	echo $conn->error;
 }
@@ -59,7 +55,7 @@ if (!$alreadySaved) {
 			$userCode = $row[2];
 		} else {
 			//Code does not exist, load dummy code
-			$userCode = 'Plaats je code hier';
+			$userCode = $templateCode;
 		}
 	}
 	
