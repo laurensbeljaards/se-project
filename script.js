@@ -36,3 +36,19 @@ function fillListingCategory(array, categoryId) {
         }
     }
 }
+
+var badgesArray = ["Time", "Up", "Okay"];
+
+function fillBadgeBar() {
+    for (var i = 0; i < 20; i++) {
+        var li = document.createElement("li");
+        li.className = "badge";
+        var badgeBar = document.getElementById("badgeBar");
+        if (i < badgesArray.length) {
+            li.style.backgroundImage = 'url(css/Badges/'+badgesArray[i]+'_Icon.jpg)';
+        } else {
+            li.style.backgroundImage = 'url(css/Badges/Locked_Icon.jpg)';
+        }
+        badgeBar.appendChild(li);
+    }
+}
