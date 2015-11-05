@@ -1,132 +1,90 @@
 <?php
-require_once($BASEDIR . 'config.php');
+include 'header/header.php';
 
-include $BASEDIR . 'header/header.php';
-
+$server = 'mysql.liacs.leidenuniv.nl'; //load the database
+$username = 's1525670'; 
+$password = 'v7saivRR'; 
+$database = 's1525670';
 $conn = new mysqli($server, $username, $password, $database);
 if($conn->connect_errno) {
-    die('Could not connect: ' .$conn->connect_error);
+    die('Could not connect: ' .$mysqli->connect_error);
 }
-
-$sql = "SELECT * FROM opdrachten";
-$result = $conn->query($sql);
-
-$opdrid = $_GET["opdr"];
-$selectedAssignment = $opdrid;
-
-$selectreq = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
-$reqresult = $conn->query($selectreq);
-
+?>
+<?php //$opdrid = $_GET["opdr"]; 
+$opdrid='6';
 $sql = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
-$templateResult = $conn->query($selectreq);
-$templateCode = $templateResult->fetch_assoc();
-$templateCode = $templateCode["templatecode"];
-	
-//check if user already saved this assignment
-$sql = "SELECT * FROM `student_opdracht` WHERE `student_id` = " . $studentid . " AND `opdracht_id` = " . $selectedAssignment . ";";
-$alreadySaved = $conn->query($sql);
-
-if (!$alreadySaved) {
-	echo $conn->error;
-}
-
-	if (isset($_POST["userCode"])) {
-		//Save button pressed -> Save the file
-		$userCode = htmlspecialchars($_POST["userCode"]);
-		
-		if ($alreadySaved->num_rows > 0) {
-			//if assignment is already saved -> edit table
-			$sql = "UPDATE `student_opdracht` SET `code` = '" . $userCode . "' WHERE `student_id` = " . $studentid . " AND `opdracht_id` = " . $selectedAssignment;
-			if (!$alreadySaved = $conn->query($sql)) {
-				echo $conn->error;
+$currentvalues = $conn->query($sql);
+echo 'De huidige waardes van deze opdracht zijn, klik op Save om deze te wijzigen'.'<br />';
+if($currentvalues->num_rows > 0){
+            while($row = $currentvalues->fetch_assoc()){
+				$name = $row["naam"];
+				$description = $row["description"];
+				$level = $row["moeilijkheidsgraad"];
+				$category = $row["categorie"];
+				$requirements = $row["requirements"];
+				$template = $row["templatecode"];
 			}
-		} else {
-			//if assignment is never saved -> create new
-			$sql = "INSERT INTO `student_opdracht` (`student_id`, `opdracht_id`, `code`) VALUES ('" . $studentid . "', '" . $selectedAssignment . "', '" . $userCode . "')";
-			if (!$alreadySaved = $conn->query($sql)) {
-				echo $conn->error;
-			}
+    }else{
+		echo 'Deze opdracht-id is nog niet opgeslagen!';
+    }
+?>
+
+<?php
+	if($_POST['submitAll'] == "Save") {
+		if(isset($_POST['name'])){
+			$name = $_POST['name'];
+			$sql = "UPDATE opdrachten SET naam = '{$name}' WHERE id = '{$opdrid}'";
+			$conn->query($sql); //update the database
 		}
-	} else {
-		//Save button not pressed -> Try load code
-		if ($alreadySaved->num_rows > 0) {
-			//Code already exists -> Load code
-			$row = $alreadySaved->fetch_row();
-			$userCode = $row[2];
-		} else {
-			//Code does not exist, load dummy code
-			$userCode = $templateCode;
+		if(isset($_POST['description'])) {
+			$description = $_POST['description'];
+			$sql = "UPDATE opdrachten SET description = '{$description}' WHERE id = '{$opdrid}'";
+			$conn->query($sql); //update the database
+		}
+		if(isset($_POST['level'])) {
+			$level = $_POST['level'];
+			$sql = "UPDATE opdrachten SET moeilijkheidsgraad = '{$level}' WHERE id = '{$opdrid}'";
+			$conn->query($sql); //update the database
+		}
+		if(isset($_POST['category'])) {
+			$category = $_POST['category'];
+			$sql = "UPDATE opdrachten SET categorie = '{$category}' WHERE id = '{$opdrid}'";
+			$conn->query($sql); //update the database
+		}
+		if(isset($_POST['requirements'])) {
+			$requirements = $_POST['requirements'];
+			$sql = "UPDATE opdrachten SET requirements = '{$requirements}' WHERE id = '{$opdrid}'";
+			$conn->query($sql); //update the database
+		}
+		if(isset($_POST['template'])) {
+			$template = $_POST['template'];
+			$sql = "UPDATE opdrachten SET templatecode = '{$template}' WHERE id = '{$opdrid}'";
+			$conn->query($sql); //update the database
 		}
 	}
-	
-mysqli_close($conn);
 ?>
-<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
 
-<div class="extrainfoheader">
-	<div style='margin-top: 40px;'>&nbsp</div>
-
-	<div class="extrainfosub">
-		<h5>Available Tasks:</h5>
-    </div>
-	<div>
-        <?php
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
-                echo '<a href ="index.php?opdr='.$row["id"].'"><li id ="' . $row["id"] . '">'. $row["naam"] . '</li></a>';
-                echo '<div style="width: 260px" id ="hidden' . $row["id"]. '">' . $row["description"] . '</div>'; 
-                
-                 ?>
-                 <script type="text/javascript">
-						$(function() {
-							$('#<?php echo "hidden".$row["id"]; ?>').hide();
-							$('#<?php echo $row["id"]; ?>').hover(function() { 
-								$('#<?php echo "hidden".$row["id"]; ?>').show();
-								$('#<?php echo "hidden".$row["id"]; ?>').hover(function(){
-									$('#<?php echo "hidden".$row["id"]; ?>').show();
-								}, function(){
-									$('#<?php echo "hidden".$row["id"]; ?>').hide();
-								});
-							}, function() { 
-								$('#<?php echo "hidden".$row["id"]; ?>').hide(); 
-							});
-						});
-                    </script>
-
-                <?php
-            }
-        }
-        ?>
-
-	</div>
-
-	<div class="extrainfosub">
-		<h5>Current Task Requirements: </h5>
-    </div>
-	<div>
-    	<?php
-        if($reqresult->num_rows > 0){
-            while($row = $reqresult->fetch_assoc()){
-                ?>
-                <div style="width: 260px; margin: 4px;"><?php echo $row["requirements"]; ?></div>
-                <?php
-            }
-        }else{
-            ?>
-            <div style="width: 260px; margin: 4px;">Opdracht niet gevonden.</div>
-            <?php
-        }
-        ?>
-	</div>
-</div>
-
-<div class="">
-    <textarea rows="25" cols="85" name="userCode" id="textarea" class="codetextarea" form="submitCode"><?php echo $userCode; ?></textarea>
-	<form id="submitCode" method="post">
-		<input type="submit" value="Sla de code op">
-	</form>
-</div>
-
+<form action="docentchange.php" name="formvalues" method="post">
+	Naam:
+	<input type="text" name="name" value="<?php echo $name; ?>"/>	
+	<br />
+	Ondertitel:
+	<input type="text" name="description" value="<?php echo $description; ?>"/>	
+	<br />
+	Moeilijkheidsgraad:
+	<input type="number" name="level" value="<?php echo $level; ?>"/>
+	<br />
+	Categorie:
+	<input type="text" name="category" value="<?php echo $category; ?>"/>
+	<br />
+	Requirements:
+	<input type="text" name="requirements" value="<?php echo $requirements; ?>"/>
+	<br />
+	Template code:
+	<textarea rows="10" cols="60" name="template" id="textarea" class="codetextarea"><?php echo $template; ?></textarea>
+	<br />
+	<input type="submit" name="submitAll" value="Save" />
+</form>
 <script>
                 document.querySelector("textarea").addEventListener
                 ('keypress',function(keystroke) {//ignores special keys like shift and tab (eg shift + ] is }, but } will then not be recognised)
@@ -206,6 +164,4 @@ mysqli_close($conn);
                             keystroke.preventDefault();
                         }
                      },false);
-                </script>
-</body>
-</html>
+</script>
