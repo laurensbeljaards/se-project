@@ -9,21 +9,21 @@ if($conn->connect_errno) {
 }
 
 $sql = "SELECT * FROM opdrachten";
-$result = $conn->query($sql);
+$allAssignments = $conn->query($sql);
 
 $opdrid = $_GET["opdr"];
-$selectedAssignment = $opdrid;
-
-$selectreq = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
-$reqresult = $conn->query($selectreq);
 
 $sql = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
-$templateResult = $conn->query($selectreq);
+$allRequirements = $conn->query($sql);
+
+$sql = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
+$templateResult = $conn->query($sql);
 $templateCode = $templateResult->fetch_assoc();
+$youtubeId = $templateCode["youtubeid"];
 $templateCode = $templateCode["templatecode"];
 	
 //check if user already saved this assignment
-$sql = "SELECT * FROM `student_opdracht` WHERE `student_id` = " . $studentid . " AND `opdracht_id` = " . $selectedAssignment . ";";
+$sql = "SELECT * FROM `student_opdracht` WHERE `student_id` = " . $studentid . " AND `opdracht_id` = " . $opdrid . ";";
 $alreadySaved = $conn->query($sql);
 
 if (!$alreadySaved) {
@@ -36,13 +36,13 @@ if (!$alreadySaved) {
 		
 		if ($alreadySaved->num_rows > 0) {
 			//if assignment is already saved -> edit table
-			$sql = "UPDATE `student_opdracht` SET `code` = '" . $userCode . "' WHERE `student_id` = " . $studentid . " AND `opdracht_id` = " . $selectedAssignment;
+			$sql = "UPDATE `student_opdracht` SET `code` = '" . $userCode . "' WHERE `student_id` = " . $studentid . " AND `opdracht_id` = " . $opdrid;
 			if (!$alreadySaved = $conn->query($sql)) {
 				echo $conn->error;
 			}
 		} else {
 			//if assignment is never saved -> create new
-			$sql = "INSERT INTO `student_opdracht` (`student_id`, `opdracht_id`, `code`) VALUES ('" . $studentid . "', '" . $selectedAssignment . "', '" . $userCode . "')";
+			$sql = "INSERT INTO `student_opdracht` (`student_id`, `opdracht_id`, `code`) VALUES ('" . $studentid . "', '" . $opdrid . "', '" . $userCode . "')";
 			if (!$alreadySaved = $conn->query($sql)) {
 				echo $conn->error;
 			}
@@ -71,8 +71,8 @@ mysqli_close($conn);
     </div>
 	<div>
         <?php
-        if($result->num_rows > 0){
-            while($row = $result->fetch_assoc()){
+        if($allAssignments->num_rows > 0){
+            while($row = $allAssignments->fetch_assoc()){
                 echo '<a href ="index.php?opdr='.$row["id"].'"><li id ="' . $row["id"] . '">'. $row["naam"] . '</li></a>';
                 echo '<div style="width: 260px" id ="hidden' . $row["id"]. '">' . $row["description"] . '</div>'; 
                 
@@ -105,8 +105,8 @@ mysqli_close($conn);
     </div>
 	<div>
     	<?php
-        if($reqresult->num_rows > 0){
-            while($row = $reqresult->fetch_assoc()){
+        if($allRequirements->num_rows > 0){
+            while($row = $allRequirements->fetch_assoc()){
                 ?>
                 <div style="width: 260px; margin: 4px;"><?php echo $row["requirements"]; ?></div>
                 <?php
@@ -118,6 +118,55 @@ mysqli_close($conn);
         }
         ?>
 	</div>
+	<div id="fillspace">
+	
+	</div>
+	<div id="player">
+		<p>Voor deze opdracht is geen YouTube video beschikbaar.</p>
+	</div>
+	<?php
+	if($youtubeId != NULL) {
+		echo '
+	<script>
+      // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement(\'script\');
+
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName(\'script\')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player(\'player\', {
+          height: \'157\',
+          width: \'280\',
+          videoId: \'' . $youtubeId . '\',
+          events: {
+            \'onReady\': onPlayerReady,
+            \'onStateChange\': onPlayerStateChange
+          }
+        });
+      }
+
+      // 4. The API will call this function when the video player is ready.
+      function onPlayerReady(event) {
+        //event.target.playVideo();
+      }
+
+      // 5. The API calls this function when the player\'s state changes.
+      //    The function indicates that when playing a video (state=1),
+      //    the player should play for six seconds and then stop.
+      var done = false;
+      function onPlayerStateChange(event) {
+
+      }
+      function stopVideo() {
+        player.stopVideo();
+      }
+    </script>';}
+	?>
 </div>
 
 <div class="">
