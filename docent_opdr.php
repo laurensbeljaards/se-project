@@ -1,36 +1,36 @@
 <?php
 require_once($BASEDIR . 'config.php');
+
 include 'header/header.php';
 
 $conn = new mysqli($server, $username, $password, $database);
-
 if($conn->connect_errno) {
     die('Could not connect: ' .$mysqli->connect_error);
 }
 
-?>
+$sql_opdr = "SELECT * FROM opdrachten";
+$result_opdr = $conn->query($sql_opdr);
 
-<?php 
-$opdrid = '6';
-$sql = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
-$currentValues = $conn->query($sql);
-echo 'De huidige waardes van deze opdracht zijn, klik op Save om deze te wijzigen'.'<br />';
-if($currentValues->num_rows > 0){
-	while($row = $currentValues->fetch_assoc()){
-		$name = $row["naam"];
-		$description = $row["description"];
-		$level = $row["moeilijkheidsgraad"];
-		$category = $row["categorie"];
-		$requirements = $row["requirements"];
-		$template = $row["templatecode"];
-	}
+if (isset($_GET["opdr"])) {
+	$opdrid = $_GET["opdr"];
 } else {
-	echo 'Deze opdracht-id is (nog) niet opgeslagen!';
+	$opdrid = 0;
 }
-?>
 
-<?php
-	if(isset($_POST['submitAll'])) {
+$select_info = "SELECT * FROM opdrachten WHERE id = $opdrid";
+$result_info = $conn->query($select_info);
+
+$sql_delete = "DELETE FROM opdrachten WHERE id = $opdrid"; 
+//$result_delete = $conn->query($sql_delete);
+
+//Check if delete button is pressed
+if(isset($_POST['deleteAccepted'])){
+	$conn->query($sql_delete);
+	echo "Opdracht verwijderd.";
+}
+
+//Check if Save button is pressed
+if(isset($_POST['submitAll'])) {
 		if(isset($_POST['name'])){
 			$name = $_POST['name'];
 			$sql = "UPDATE opdrachten SET naam = '{$name}' WHERE id = '{$opdrid}'";
@@ -62,10 +62,51 @@ if($currentValues->num_rows > 0){
 			$conn->query($sql); //update the database
 		}
 	}
-mysqli_close($conn);
+
+	$sql = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
+	$currentValues = $conn->query($sql);
+
+	mysqli_close($conn);
 ?>
 
-<form action="docentchange.php" name="formvalues" method="post">
+<div class="extrainfoheader_docent">
+	<!-- <div style='margin-top: 40px;'>&nbsp</div> -->
+
+	<div class="extrainfosub_docent">
+		<h5>Opdrachten: <small><a href="#" style="color: #B30000; float: right; margin-top: 3px;">Opdracht toevoegen</a></small> </h5>
+    </div>
+
+    <?php
+    if($result_opdr->num_rows > 0){
+		while($row = $result_opdr->fetch_assoc()){
+			?>
+			<tr>
+				<li><a href=<?php echo "docent_opdr.php?opdr="; echo $row["id"]; ?>><?php echo $row["naam"]; ?></a></li>
+			</tr>
+			<?php
+		}
+	}else{
+		echo "<tr><td>Nog geen opdrachten ingevoerd</td></tr>";
+	}
+	?>
+	
+</div>
+
+<?php
+if($opdrid != 0){
+	echo 'De huidige waardes van deze opdracht zijn, klik op Save om deze te wijzigen'.'<br />';
+	if($currentValues->num_rows > 0){
+		while($row = $currentValues->fetch_assoc()){
+			$name = $row["naam"];
+			$description = $row["description"];
+			$level = $row["moeilijkheidsgraad"];
+			$category = $row["categorie"];
+			$requirements = $row["requirements"];
+			$template = $row["templatecode"];
+		}
+	}
+	?>
+	<form action="" name="formvalues" method="post">
 	Naam:
 	<input type="text" name="name" value="<?php echo $name; ?>"/>	
 	<br />
@@ -85,7 +126,16 @@ mysqli_close($conn);
 	<textarea rows="10" cols="40" name="template" id="textarea" class="codetextarea"><?php echo $template; ?></textarea>
 	<br />
 	<input type="submit" name="submitAll" value="Save" />
-</form>
+	</form>
+	<form action="" method="POST">
+		<input type="submit" name="deleteAccepted" value="DELETE">
+	</form>
+	<?php
+}else{
+	echo "Selecteer een opdracht!";
+}
+?>
+
 <script>
                 document.querySelector("textarea").addEventListener
                 ('keypress',function(keystroke) {//ignores special keys like shift and tab (eg shift + ] is }, but } will then not be recognised)
@@ -124,7 +174,6 @@ mysqli_close($conn);
                         var start = this.selectionStart;
                         var target = keystroke.target;
                         var value = target.value;
-
                         //Goes back to the beginning of the line and checks for tabs
                         for (var i = textarea.selectionStart-1; i >= 0 ; i--) {
                             if (value[i] == "\t") {//Tabs for each tab at the beginning of the previous line

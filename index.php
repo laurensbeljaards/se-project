@@ -63,6 +63,17 @@ mysqli_close($conn);
 ?>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
 
+<?php
+if($allRequirements->num_rows > 0){
+    $row = $allRequirements->fetch_assoc();
+}
+?>
+<div class="requirements">
+    <h2><?php echo $row["naam"]; ?></h2>
+    <p><?php echo $row["requirements"]; ?></p>
+</div>
+
+
 <div class="extrainfoheader">
 	<div style='margin-top: 40px;'>&nbsp</div>
 
@@ -100,27 +111,6 @@ mysqli_close($conn);
 
 	</div>
 
-	<div class="extrainfosub">
-		<h5>Current Task Requirements: </h5>
-    </div>
-	<div>
-    	<?php
-        if($allRequirements->num_rows > 0){
-            while($row = $allRequirements->fetch_assoc()){
-                ?>
-                <div style="width: 260px; margin: 4px;"><?php echo $row["requirements"]; ?></div>
-                <?php
-            }
-        }else{
-            ?>
-            <div style="width: 260px; margin: 4px;">Opdracht niet gevonden.</div>
-            <?php
-        }
-        ?>
-	</div>
-	<div id="fillspace">
-	
-	</div>
 	<div id="player">
 		<p>Voor deze opdracht is geen YouTube video beschikbaar.</p>
 	</div>
