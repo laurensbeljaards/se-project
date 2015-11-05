@@ -3,7 +3,7 @@ include 'header/header.php';
 
 $server = 'mysql.liacs.leidenuniv.nl'; //load the database
 $username = 's1525670'; 
-$password = 'v7saivRR'; 
+$password = 'PLACEHOLDER'; 
 $database = 's1525670';
 $conn = new mysqli($server, $username, $password, $database);
 if($mysqli->connect_errno) {
