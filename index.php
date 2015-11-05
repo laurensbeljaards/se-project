@@ -78,18 +78,23 @@ mysqli_close($conn);
         if($result->num_rows > 0){
             while($row = $result->fetch_assoc()){
                 echo '<a href ="index.php?opdr='.$row["id"].'"><li id ="' . $row["id"] . '">'. $row["naam"] . '</li></a>';
-                echo '<div style="margin: 4px; width: 260px" id ="hidden' . $row["id"]. '">' . $row["description"] . '</div>'; 
+                echo '<div style="width: 260px" id ="hidden' . $row["id"]. '">' . $row["description"] . '</div>'; 
                 
                  ?>
                  <script type="text/javascript">
-                    $(function() {
-                        $('#<?php echo "hidden".$row["id"]; ?>').hide();
-                        $('#<?php echo $row["id"]; ?>').hover(function() { 
-                            $('#<?php echo "hidden".$row["id"]; ?>').show(); 
-                        }, function() { 
-                            $('#<?php echo "hidden".$row["id"]; ?>').hide(); 
-                        });
-                    });
+						$(function() {
+							$('#<?php echo "hidden".$row["id"]; ?>').hide();
+							$('#<?php echo $row["id"]; ?>').hover(function() { 
+								$('#<?php echo "hidden".$row["id"]; ?>').show();
+								$('#<?php echo "hidden".$row["id"]; ?>').hover(function(){
+									$('#<?php echo "hidden".$row["id"]; ?>').show();
+								}, function(){
+									$('#<?php echo "hidden".$row["id"]; ?>').hide();
+								});
+							}, function() { 
+								$('#<?php echo "hidden".$row["id"]; ?>').hide(); 
+							});
+						});
                     </script>
 
                 <?php
