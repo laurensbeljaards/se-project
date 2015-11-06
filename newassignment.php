@@ -1,176 +1,75 @@
 <?php
-require_once($BASEDIR . 'config.php');
+	require_once($BASEDIR . 'config.php');
 
-include $BASEDIR . 'header/header.php';
+	include $BASEDIR . 'header/header.php';
 
-$conn = new mysqli($server, $username, $password, $database);
-if($conn->connect_errno) {
-    die('Could not connect: ' .$conn->connect_error);
-}
-
-$sql = "SELECT * FROM opdrachten";
-$allAssignments = $conn->query($sql);
-
-if (isset($_GET["opdr"])) {
-	$opdrid = $_GET["opdr"];
-} else {
-	$opdrid = 0;
-}
-
-$sql = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
-$allRequirements = $conn->query($sql);
-
-$sql = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
-$templateResult = $conn->query($sql);
-$templateCode = $templateResult->fetch_assoc();
-$youtubeId = $templateCode["youtubeid"];
-$templateCode = $templateCode["templatecode"];
+	$conn = new mysqli($server, $username, $password, $database);
+	if($conn->connect_errno) {
+		die('Could not connect: ' .$conn->connect_error);
+	}
 	
-//check if user already saved this assignment
-$sql = "SELECT * FROM `student_opdracht` WHERE `student_id` = " . $studentid . " AND `opdracht_id` = " . $opdrid . ";";
-$alreadySaved = $conn->query($sql);
-
-if (!$alreadySaved) {
-	echo $conn->error;
-}
-
-	if (isset($_POST["userCode"])) {
-		//Save button pressed -> Save the file
-		$userCode = htmlspecialchars($_POST["userCode"]);
-		
-		if ($alreadySaved->num_rows > 0) {
-			//if assignment is already saved -> edit table
-			$sql = "UPDATE `student_opdracht` SET `code` = '" . $userCode . "' WHERE `student_id` = " . $studentid . " AND `opdracht_id` = " . $opdrid;
-			if (!$alreadySaved = $conn->query($sql)) {
-				echo $conn->error;
-			}
-		} else {
-			//if assignment is never saved -> create new
-			$sql = "INSERT INTO `student_opdracht` (`student_id`, `opdracht_id`, `code`) VALUES ('" . $studentid . "', '" . $opdrid . "', '" . $userCode . "')";
-			if (!$alreadySaved = $conn->query($sql)) {
-				echo $conn->error;
-			}
-		}
-	} else {
-		//Save button not pressed -> Try load code
-		if ($alreadySaved->num_rows > 0) {
-			//Code already exists -> Load code
-			$row = $alreadySaved->fetch_row();
-			$userCode = $row[2];
-		} else {
-			//Code does not exist, load dummy code
-			$userCode = $templateCode;
+	$sql_opdr = "SELECT * FROM opdrachten";
+	$result_opdr = $conn->query($sql_opdr);
+	
+	if(isset($_POST['submitAll'])) {
+		if(isset($_POST['name']) && isset($_POST['description']) && isset($_POST['level']) && isset($_POST['category']) && isset($_POST['requirements']) && isset($_POST['template']) && isset($_POST['youtubeId'])){
+			$sql = sprintf("INSERT INTO `opdrachten` (`id`, `naam`, `completed`, `description`, `moeilijkheidsgraad`, `categorie`, `requirements`, `templatecode`, `youtubeid`) VALUES (NULL, '%s', '0', '%s', '%s', '%s', '%s', '%s', '%s');", mysql_escape_string($_POST['name']), mysql_escape_string($_POST['description']), mysql_escape_string($_POST['level']), mysql_escape_string($_POST['category']), mysql_escape_string($_POST['requirements']), mysql_escape_string($_POST['template']), mysql_escape_string($_POST['youtubeId']));
+			$conn->query($sql);
 		}
 	}
 	
-mysqli_close($conn);
+	mysqli_close($conn);
 ?>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
 
-<?php
-if($allRequirements->num_rows > 0){
-    $row = $allRequirements->fetch_assoc();
-?>
-<div class="requirements">
-    <h2><?php echo $row["naam"]; ?></h2>
-    <p><?php echo $row["requirements"]; ?></p>
-</div>
-<?php
-}
-?>
+<div class="extrainfoheader_docent">
+	<!-- <div style='margin-top: 40px;'>&nbsp</div> -->
 
-
-<div class="extrainfoheader">
-	<div style='margin-top: 40px;'>&nbsp</div>
-
-	<div class="extrainfosub">
-		<h5>Available Tasks:</h5>
+	<div class="extrainfosub_docent">
+		<h5>Opdrachten: <small><a href="newassignment.php" style="color: #B30000; float: right; margin-top: 3px;">Opdracht toevoegen</a></small> </h5>
     </div>
-	<div>
-        <?php
-        if($allAssignments->num_rows > 0){
-            while($row = $allAssignments->fetch_assoc()){
-                echo '<a href ="index.php?opdr='.$row["id"].'"><li id ="' . $row["id"] . '">'. $row["naam"] . '</li></a>';
-                echo '<div style="width: 260px" id ="hidden' . $row["id"]. '">' . $row["description"] . '</div>'; 
-                
-                 ?>
-                 <script type="text/javascript">
-						$(function() {
-							$('#<?php echo "hidden".$row["id"]; ?>').hide();
-							$('#<?php echo $row["id"]; ?>').hover(function() { 
-								$('#<?php echo "hidden".$row["id"]; ?>').show();
-								$('#<?php echo "hidden".$row["id"]; ?>').hover(function(){
-									$('#<?php echo "hidden".$row["id"]; ?>').show();
-								}, function(){
-									$('#<?php echo "hidden".$row["id"]; ?>').hide();
-								});
-							}, function() { 
-								$('#<?php echo "hidden".$row["id"]; ?>').hide(); 
-							});
-						});
-                    </script>
 
-                <?php
-            }
-        }
-        ?>
-
-	</div>
-
-	<div id="player">
-		<p>Voor deze opdracht is geen YouTube video beschikbaar.</p>
-	</div>
-	<?php
-	if($youtubeId != NULL) {
-		echo '
-	<script>
-      // 2. This code loads the IFrame Player API code asynchronously.
-      var tag = document.createElement(\'script\');
-
-      tag.src = "https://www.youtube.com/iframe_api";
-      var firstScriptTag = document.getElementsByTagName(\'script\')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-      // 3. This function creates an <iframe> (and YouTube player)
-      //    after the API code downloads.
-      var player;
-      function onYouTubeIframeAPIReady() {
-        player = new YT.Player(\'player\', {
-          height: \'157\',
-          width: \'280\',
-          videoId: \'' . $youtubeId . '\',
-          events: {
-            \'onReady\': onPlayerReady,
-            \'onStateChange\': onPlayerStateChange
-          }
-        });
-      }
-
-      // 4. The API will call this function when the video player is ready.
-      function onPlayerReady(event) {
-        //event.target.playVideo();
-      }
-
-      // 5. The API calls this function when the player\'s state changes.
-      //    The function indicates that when playing a video (state=1),
-      //    the player should play for six seconds and then stop.
-      var done = false;
-      function onPlayerStateChange(event) {
-
-      }
-      function stopVideo() {
-        player.stopVideo();
-      }
-    </script>';}
+    <?php
+    if($result_opdr->num_rows > 0){
+		while($row = $result_opdr->fetch_assoc()){
+			?>
+			<tr>
+				<li><a href=<?php echo "docent_opdr.php?opdr="; echo $row["id"]; ?>><?php echo $row["naam"]; ?></a></li>
+			</tr>
+			<?php
+		}
+	}else{
+		echo "<tr><td>Nog geen opdrachten ingevoerd</td></tr>";
+	}
 	?>
+	
 </div>
 
-<div class="">
-    <textarea rows="25" cols="85" name="userCode" id="textarea" class="codetextarea" form="submitCode"><?php echo $userCode; ?></textarea>
-	<form id="submitCode" method="post">
-		<input type="submit" value="Sla de code op">
+	<h1>Nieuwe opdracht</h1>
+	<form action="" name="formvalues" method="post">
+	Naam:
+	<input type="text" name="name" value=""/>	
+	<br />
+	Ondertitel:
+	<input type="text" name="description" value=""/>	
+	<br />
+	Moeilijkheidsgraad:
+	<input type="number" name="level" value=""/>
+	<br />
+	Categorie:
+	<input type="text" name="category" value=""/>
+	<br />
+	Requirements:
+	<input type="text" name="requirements" value=""/>
+	<br />
+	Youtube-ID:
+	<input type="text" name="youtubeId" value=""/>
+	<br />
+	Template code:
+	<textarea rows="10" cols="40" name="template" id="textarea" class="codetextarea"></textarea>
+	<br />
+	<input type="submit" name="submitAll" value="Save" />
 	</form>
-</div>
 
 <script>
                 document.querySelector("textarea").addEventListener
