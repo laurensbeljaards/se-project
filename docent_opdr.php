@@ -69,7 +69,7 @@ if(isset($_POST['submitAll'])) {
 			$conn->query($sql); //update the database
 		}
 		if(isset($_POST['youtubeId'])) {
-			$template = $_POST['template'];
+			$youtubeId = $_POST['youtubeId'];
 			$sql = "UPDATE opdrachten SET youtubeid = '{$youtubeId}' WHERE id = '{$opdrid}'";
 			$conn->query($sql); //update the database
 		}
