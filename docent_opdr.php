@@ -27,6 +27,13 @@ $sql_delete = "DELETE FROM opdrachten WHERE id = $opdrid";
 if(isset($_POST['deleteAccepted'])){
 	$conn->query($sql_delete);
 	echo "Opdracht verwijderd.";
+	$name = "";
+	$description = "";
+	$level = "";
+	$category = "";
+	$requirements = "";
+	$template = "";
+	$youtubeId = "";
 }
 
 //Check if Save button is pressed
@@ -61,6 +68,11 @@ if(isset($_POST['submitAll'])) {
 			$sql = "UPDATE opdrachten SET templatecode = '{$template}' WHERE id = '{$opdrid}'";
 			$conn->query($sql); //update the database
 		}
+		if(isset($_POST['youtubeId'])) {
+			$template = $_POST['template'];
+			$sql = "UPDATE opdrachten SET youtubeid = '{$youtubeId}' WHERE id = '{$opdrid}'";
+			$conn->query($sql); //update the database
+		}
 	}
 
 	$sql = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
@@ -73,7 +85,7 @@ if(isset($_POST['submitAll'])) {
 	<!-- <div style='margin-top: 40px;'>&nbsp</div> -->
 
 	<div class="extrainfosub_docent">
-		<h5>Opdrachten: <small><a href="#" style="color: #B30000; float: right; margin-top: 3px;">Opdracht toevoegen</a></small> </h5>
+		<h5>Opdrachten: <small><a href="newassignment.php" style="color: #B30000; float: right; margin-top: 3px;">Opdracht toevoegen</a></small> </h5>
     </div>
 
     <?php
@@ -92,6 +104,7 @@ if(isset($_POST['submitAll'])) {
 	
 </div>
 
+<h1>Opdracht aanpassen</h1>
 <?php
 if($opdrid != 0){
 	echo 'De huidige waardes van deze opdracht zijn, klik op Save om deze te wijzigen'.'<br />';
@@ -103,6 +116,7 @@ if($opdrid != 0){
 			$category = $row["categorie"];
 			$requirements = $row["requirements"];
 			$template = $row["templatecode"];
+			$youtubeId = $row["youtubeid"];
 		}
 	}
 	?>
@@ -121,6 +135,9 @@ if($opdrid != 0){
 	<br />
 	Requirements:
 	<input type="text" name="requirements" value="<?php echo $requirements; ?>"/>
+	<br />
+	Youtube-ID:
+	<input type="text" name="youtubeId" value="<?php echo $youtubeId; ?>"/>
 	<br />
 	Template code:
 	<textarea rows="10" cols="40" name="template" id="textarea" class="codetextarea"><?php echo $template; ?></textarea>
