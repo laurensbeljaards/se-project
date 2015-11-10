@@ -67,7 +67,7 @@ if (!$alreadySaved) {
 mysqli_close($conn);
 ?>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
-test
+
 <?php
 if($allRequirements->num_rows > 0){
     $row = $allRequirements->fetch_assoc();
