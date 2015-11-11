@@ -9,11 +9,18 @@
 </head>
 
 <body>
+<script src="<?php echo $RELPATH . 'script.js'; ?>"></script>
+<div class="badge-shell">
+    <div class="badgeBar" id="badgeBar"></div>
+</div>
+<script>
+    fillBadgeBar();
+</script>
 <div id='cssmenu'>
     <ul>
         <li class='active'><a href='#'>Home</a></li>
-        <li><a href='#'>leerlingen</a></li>
-        <li><a href='#'>Leraar</a></li>
+        <li><a href='index.php'>leerlingen</a></li>
+        <li><a href='docent_opdr.php'>Leraar</a></li>
         <li><a href='#'>Opdrachten</a></li>
         <li><a href='#'>Achievements</a></li>
         <li><a href='#'>About C Sharper</a></li>
