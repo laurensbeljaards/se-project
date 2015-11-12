@@ -21,7 +21,7 @@ if($loggedInTeacher){
 <div class="wrap">
     <div class="logo">
         <img src="images/404.png" alt=""  />
-        <p><a href=<?php echo $url; ?> >Go back to Home</a></p>
+        <p><a href='login.php' >Go back to Home</a></p>
     </div>
 </div>
 <div class="footer">
