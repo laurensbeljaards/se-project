@@ -1,8 +1,12 @@
 <?php
 require_once('config.php');
 
-include $BASEDIR . 'header/header.php';
+if(!$loggedInStudent){
+	//als geen docent weergeef error
+	header('Location: 404.php');
+}
 
+include $BASEDIR . 'header/header.php';
 
 $conn = new mysqli($server, $usernamedb, $passworddb, $database);
 if($conn->connect_errno) {
