@@ -68,10 +68,13 @@ if($loggedInStudent == 0 && $loggedInTeacher == 0){ ?>
 			<td><input type="password" name="password" /></td>
 		</tr>
 		<tr>
-			<input type="radio" name="studentOrTeacher" value="student" checked >Student
+			<td><input type="radio" name="studentOrTeacher" value="student" checked> Student
 			<br>
-			<input type="radio" name="studentOrTeacher" value="teacher">Docent
+			<input type="radio" name="studentOrTeacher" value="teacher"> Docent</td>
+		</tr>
+		<tr>
 			<td><input type="submit" name="submit" value="Login" /></td>
+		</tr>
 		</tr>
 	</table>
 </form>
