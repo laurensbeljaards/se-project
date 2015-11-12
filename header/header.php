@@ -1,3 +1,8 @@
+<?php
+//$loggedInStudent = 0;
+//$loggedInDocent = 0;
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,7 +14,7 @@
 </head>
 
 <body>
-
+<!--
 <script src="<?php echo $RELPATH . 'script.js'; ?>"></script>
 <div class="badge-shell">
     <div class="badgeBar" id="badgeBar"></div>
@@ -17,25 +22,57 @@
 <script>
     fillBadgeBar();
 </script>
+-->
+
+
 <div id='cssmenu'>
     <ul>
+    <?php
+    if($loggedInStudent){
+        ?>
         <li class='active'><a href='#'>Home</a></li>
-        <li><a href='index.php'>leerlingen</a></li>
-        <li><a href='docent_opdr.php'>Leraar</a></li>
-        <li><a href='#'>Opdrachten</a></li>
+        <li><a href='index.php'>Opdrachten</a></li>
         <li><a href='#'>Achievements</a></li>
         <li><a href='#'>About C Sharper</a></li>
-		<?php 
-		if($loggedInStudent == 1){ 
-		?> <li><a href='logout.php'>
-		<?php echo "Logged in as " . $username . ", click here to logout"; ?> </a></li> 
-		<?php }else if($loggedInTeacher == 1){ 
-		?> <li><a href='logout.php'>
-		<?php echo "Logged in as " . $username . ", click here to logout"; ?> </a></li> 
-		<?php }
-		else{ 
-		?> <li><a href='login.php'>Login</a></li> 
-		<?php } ?>
+        <?php 
+        if($loggedInStudent == 1){ 
+        ?> <li><a href='logout.php'>
+        <?php echo "Logged in as " . $username . ", click here to logout"; ?> </a></li> 
+        <?php }else if($loggedInTeacher == 1){ 
+        ?> <li><a href='logout.php'>
+        <?php echo "Logged in as " . $username . ", click here to logout"; ?> </a></li> 
+        <?php }
+        else{ 
+        ?> <li><a href='login.php'>Login</a></li> 
+        <?php } ?>
+        <?php
+        echo " Ingelogd als Student.";
+    }else if($loggedInTeacher){
+        ?>
+        <li class='active'><a href='#'>Home</a></li>
+        <li><a href='docent_opdr.php'>Opdrachten</a></li>
+        <li><a href='#'>About C Sharper</a></li>
+        <?php 
+        if($loggedInStudent == 1){ 
+        ?> <li><a href='logout.php'>
+        <?php echo "Logged in as " . $username . ", click here to logout"; ?> </a></li> 
+        <?php }else if($loggedInTeacher == 1){ 
+        ?> <li><a href='logout.php'>
+        <?php echo "Logged in as " . $username . ", click here to logout"; ?> </a></li> 
+        <?php }
+        else{ 
+        ?> <li><a href='login.php'>Login</a></li> 
+        <?php } ?>
+        <?php
+        echo " Ingelogd als Docent.";
+    }else{
+        ?>
+        <li class='active'><a href='#'>Home</a></li>
+        <li><a href='login.php'>Registreren / Aanmelden</a></li>
+        <li><a href='#'>About C Sharper</a></li>
+        <?php
+    }
+    ?>
     </ul>
 </div>
 
