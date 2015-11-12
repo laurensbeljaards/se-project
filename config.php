@@ -17,14 +17,6 @@
 	$database = 's1525670';
 	//----
 	
-	//TEMP User data:
-	if (!isset($_COOKIE["studentid"])) {
-		$studentid = 1234567;
-	} else {
-		$studentid = $_COOKIE["studentid"];
-	}
-	//----
-	
 	//URL Bases:
 	//Examples of how to use these directory paths:
 	//$BASEDIR = '/home/s1532960/public_html/SE/Sprint3/';
