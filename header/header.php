@@ -36,13 +36,6 @@
 		else{ 
 		?> <li><a href='login.php'>Login</a></li> 
 		<?php } ?>
-		<?php
-		if (isset($_COOKIE["studentid"])) {
-			echo 'User: &#39;' . htmlspecialchars($_COOKIE["studentid"]) . '&#39; selected (<a href="changeuser.php">change</a>)';
-		} else {
-			echo 'No users selected. Go to <a href="changeuser.php">this</a> page to select a user.';
-		}
-		?>
     </ul>
 </div>
 

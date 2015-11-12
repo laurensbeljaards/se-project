@@ -1,5 +1,5 @@
 <?php
-	require_once($BASEDIR . 'config.php');
+	require_once('config.php');
 
 	include $BASEDIR . 'header/header.php';
 

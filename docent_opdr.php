@@ -1,7 +1,7 @@
 <?php
-require_once($BASEDIR . 'config.php');
+require_once('config.php');
 
-include 'header/header.php';
+include $BASEDIR . 'header/header.php';
 
 $conn = new mysqli($server, $usernamedb, $passworddb, $database);
 if($conn->connect_errno) {
