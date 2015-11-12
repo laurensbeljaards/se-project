@@ -1,4 +1,4 @@
-test<?php
+<?php
 require_once('config.php');
 qwe
 if(!$loggedInStudent){
