@@ -3,7 +3,7 @@
 
 	include $BASEDIR . 'header/header.php';
 
-	$conn = new mysqli($server, $username, $password, $database);
+	$conn = new mysqli($server, $usernamedb, $passworddb, $database);
 	if($conn->connect_errno) {
 		die('Could not connect: ' .$conn->connect_error);
 	}

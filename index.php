@@ -3,7 +3,8 @@ require_once('config.php');
 
 include $BASEDIR . 'header/header.php';
 
-$conn = new mysqli($server, $username, $password, $database);
+
+$conn = new mysqli($server, $usernamedb, $passworddb, $database);
 if($conn->connect_errno) {
     die('Could not connect: ' .$conn->connect_error);
 }
@@ -62,8 +63,7 @@ if (!$alreadySaved) {
 			//Code does not exist, load dummy code
 			$userCode = $templateCode;
 		}
-	}
-	
+	}	
 mysqli_close($conn);
 ?>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>

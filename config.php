@@ -7,10 +7,10 @@
 	
 	//Database properties:
 	$server = 'mysql.liacs.leidenuniv.nl';
-	$username = 's1525670'; 
-	$password = 'PLACEHOLDER'; 
+	$usernamedb = 's1525670'; 
+	$passworddb = 'PLACEHOLDER'; 
 	
-	if ($password == 'PLACEHOLDER') {
+	if ($passworddb == 'PLACEHOLDER') {
 		echo "You forgot to change the database password, you moron!!";
 	}
 	
@@ -26,7 +26,20 @@
 	//----
 	
 	//URL Bases:
-	$BASEDIR = '/home/s1514997/public_html/se/sprint2/';
-	$RELPATH = 'http://liacs.leidenuniv.nl/~s1514997/se/sprint2/';
+	$BASEDIR = '/home/s1532960/public_html/SE/Sprint3/';
+	$RELPATH = 'http://liacs.leidenuniv.nl/~s1532960/SE/Sprint3/';
 	//----
+	session_start();
+	if(isset($_SESSION['loggedInStudent'])){
+		$loggedInStudent = $_SESSION['loggedInStudent'];
+		$username = $_SESSION['username'];
+		$loggedInTeacher = $_SESSION['loggedInTeacher'];
+	} else if(isset($_SESSION['loggedInTeacher'])){
+		$loggedInTeacher = $_SESSION['loggedInTeacher'];
+		$username = $_SESSION['username'];
+		$loggedInStudent = $_SESSION['loggedInStudent'];
+	} else {
+		$loggedInTeacher = 0;
+		$loggedInStudent = 0;
+	}
 ?>

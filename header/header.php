@@ -9,6 +9,7 @@
 </head>
 
 <body>
+
 <script src="<?php echo $RELPATH . 'script.js'; ?>"></script>
 <div class="badge-shell">
     <div class="badgeBar" id="badgeBar"></div>
@@ -24,6 +25,17 @@
         <li><a href='#'>Opdrachten</a></li>
         <li><a href='#'>Achievements</a></li>
         <li><a href='#'>About C Sharper</a></li>
+		<?php 
+		if($loggedInStudent == 1){ 
+		?> <li><a href='logout.php'>
+		<?php echo "Logged in as " . $username . ", click here to logout"; ?> </a></li> 
+		<?php }else if($loggedInTeacher == 1){ 
+		?> <li><a href='logout.php'>
+		<?php echo "Logged in as " . $username . ", click here to logout"; ?> </a></li> 
+		<?php }
+		else{ 
+		?> <li><a href='login.php'>Login</a></li> 
+		<?php } ?>
 		<?php
 		if (isset($_COOKIE["studentid"])) {
 			echo 'User: &#39;' . htmlspecialchars($_COOKIE["studentid"]) . '&#39; selected (<a href="changeuser.php">change</a>)';
