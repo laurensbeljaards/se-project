@@ -1,6 +1,6 @@
 <?php
 require_once('config.php');
-
+qwe
 if(!$loggedInStudent){
 	//als geen docent weergeef error
 	header('Location: 404.php');
