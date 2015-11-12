@@ -11,7 +11,7 @@
 	$passworddb = 'PLACEHOLDER'; 
 	
 	if ($passworddb == 'PLACEHOLDER') {
-		echo "You forgot to change the database password, you moron!!";
+		echo "You forgot to change the database password, you moron!!<br /><br />";
 	}
 	
 	$database = 's1525670';
@@ -26,9 +26,18 @@
 	//----
 	
 	//URL Bases:
-	$BASEDIR = '/home/s1532960/public_html/SE/Sprint3/';
-	$RELPATH = 'http://liacs.leidenuniv.nl/~s1532960/SE/Sprint3/';
+	//Examples of how to use these directory paths:
+	//$BASEDIR = '/home/s1532960/public_html/SE/Sprint3/';
+	//$RELPATH = 'http://liacs.leidenuniv.nl/~s1532960/SE/Sprint3/';
+	$BASEDIR = 'PLACEHOLDER';
+	$RELPATH = 'PLACEHOLDER';
+	
+	if ($BASEDIR == 'PLACEHOLDER' || $RELPATH == 'PLACEHOLDER') {
+		echo "You forgot to change the BASEDIR and/or RELPATH, you moron!!<br /><br />";
+	}
 	//----
+	
+	//Inlogsysteem
 	session_start();
 	if(isset($_SESSION['loggedInStudent'])){
 		$loggedInStudent = $_SESSION['loggedInStudent'];
@@ -42,4 +51,5 @@
 		$loggedInTeacher = 0;
 		$loggedInStudent = 0;
 	}
+	//----
 ?>
