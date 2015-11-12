@@ -51,6 +51,7 @@
         ?>
         <li class='active'><a href='#'>Home</a></li>
         <li><a href='docent_opdr.php'>Opdrachten</a></li>
+		<li><a href='checkassignments.php'>Nakijken</a></li>
         <li><a href='#'>About C Sharper</a></li>
         <?php 
         if($loggedInStudent == 1){ 
