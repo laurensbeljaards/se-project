@@ -13,8 +13,8 @@ if($conn->connect_errno) {
     die('Could not connect: ' .$mysqli->connect_error);
 }
 
-$sql_opdr = "SELECT * FROM opdrachten";
-$result_opdr = $conn->query($sql_opdr);
+$sql = "SELECT * FROM opdrachten";
+$allAssignments = $conn->query($sql);
 
 if (isset($_GET["opdr"])) {
 	$opdrid = $_GET["opdr"];
@@ -22,16 +22,25 @@ if (isset($_GET["opdr"])) {
 	$opdrid = 0;
 }
 
-$select_info = "SELECT * FROM opdrachten WHERE id = $opdrid";
-$result_info = $conn->query($select_info);
+//$assignmentDetails contains all details of the assignment
+$opdrid = $conn->real_escape_string($opdrid);
+$sql = "SELECT * FROM opdrachten WHERE id = '$opdrid'";
+$sqlresult = $conn->query($sql);
+$assignmentDetails = $sqlresult->fetch_assoc();
+$name = $assignmentDetails["naam"];
+$description = $assignmentDetails["description"];
+$level = $assignmentDetails["moeilijkheidsgraad"];
+$category = $assignmentDetails["categorie"];
+$requirements = $assignmentDetails["requirements"];
+$template = $assignmentDetails["templatecode"];
+$youtubeId = $assignmentDetails["youtubeid"];
 
-$sql_delete = "DELETE FROM opdrachten WHERE id = $opdrid"; 
-//$result_delete = $conn->query($sql_delete);
+$sql_delete = "DELETE FROM opdrachten WHERE id = '$opdrid'"; 
 
 //Check if delete button is pressed
 if(isset($_POST['deleteAccepted'])){
 	$conn->query($sql_delete);
-	echo "Opdracht verwijderd.";
+	echo $conn->error;
 	$name = "";
 	$description = "";
 	$level = "";
@@ -39,63 +48,59 @@ if(isset($_POST['deleteAccepted'])){
 	$requirements = "";
 	$template = "";
 	$youtubeId = "";
+	header("refresh:0;url=docent_opdr.php");
 }
 
 //Check if Save button is pressed
 if(isset($_POST['submitAll'])) {
-		if(isset($_POST['name'])){
-			$name = $_POST['name'];
-			$sql = "UPDATE opdrachten SET naam = '{$name}' WHERE id = '{$opdrid}'";
-			$conn->query($sql); //update the database
-		}
-		if(isset($_POST['description'])) {
-			$description = $_POST['description'];
-			$sql = "UPDATE opdrachten SET description = '{$description}' WHERE id = '{$opdrid}'";
-			$conn->query($sql); //update the database
-		}
-		if(isset($_POST['level'])) {
-			$level = $_POST['level'];
-			$sql = "UPDATE opdrachten SET moeilijkheidsgraad = '{$level}' WHERE id = '{$opdrid}'";
-			$conn->query($sql); //update the database
-		}
-		if(isset($_POST['category'])) {
-			$category = $_POST['category'];
-			$sql = "UPDATE opdrachten SET categorie = '{$category}' WHERE id = '{$opdrid}'";
-			$conn->query($sql); //update the database
-		}
-		if(isset($_POST['requirements'])) {
-			$requirements = $_POST['requirements'];
-			$sql = "UPDATE opdrachten SET requirements = '{$requirements}' WHERE id = '{$opdrid}'";
-			$conn->query($sql); //update the database
-		}
-		if(isset($_POST['template'])) {
-			$template = $_POST['template'];
-			$sql = "UPDATE opdrachten SET templatecode = '{$template}' WHERE id = '{$opdrid}'";
-			$conn->query($sql); //update the database
-		}
-		if(isset($_POST['youtubeId'])) {
-			$youtubeId = $_POST['youtubeId'];
-			$sql = "UPDATE opdrachten SET youtubeid = '{$youtubeId}' WHERE id = '{$opdrid}'";
-			$conn->query($sql); //update the database
-		}
+	if(isset($_POST['name'])){
+		$name = $_POST['name'];
+		$sql = "UPDATE opdrachten SET naam = '{$name}' WHERE id = '{$opdrid}'";
+		$conn->query($sql); //update the database
 	}
+	if(isset($_POST['description'])) {
+		$description = $_POST['description'];
+		$sql = "UPDATE opdrachten SET description = '{$description}' WHERE id = '{$opdrid}'";
+		$conn->query($sql); //update the database
+	}
+	if(isset($_POST['level'])) {
+		$level = $_POST['level'];
+		$sql = "UPDATE opdrachten SET moeilijkheidsgraad = '{$level}' WHERE id = '{$opdrid}'";
+		$conn->query($sql); //update the database
+	}
+	if(isset($_POST['category'])) {
+		$category = $_POST['category'];
+		$sql = "UPDATE opdrachten SET categorie = '{$category}' WHERE id = '{$opdrid}'";
+		$conn->query($sql); //update the database
+	}
+	if(isset($_POST['requirements'])) {
+		$requirements = $_POST['requirements'];
+		$sql = "UPDATE opdrachten SET requirements = '{$requirements}' WHERE id = '{$opdrid}'";
+		$conn->query($sql); //update the database
+	}
+	if(isset($_POST['template'])) {
+		$template = $_POST['template'];
+		$sql = "UPDATE opdrachten SET templatecode = '{$template}' WHERE id = '{$opdrid}'";
+		$conn->query($sql); //update the database
+	}
+	if(isset($_POST['youtubeId'])) {
+		$youtubeId = $_POST['youtubeId'];
+		$sql = "UPDATE opdrachten SET youtubeid = '{$youtubeId}' WHERE id = '{$opdrid}'";
+		$conn->query($sql); //update the database
+	}
+}
 
-	$sql = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
-	$currentValues = $conn->query($sql);
-
-	mysqli_close($conn);
+mysqli_close($conn);
 ?>
 
 <div class="extrainfoheader_docent">
-	<!-- <div style='margin-top: 40px;'>&nbsp</div> -->
-
 	<div class="extrainfosub_docent">
 		<h5>Opdrachten: <small><a href="newassignment.php" style="color: #B30000; float: right; margin-top: 3px;">Opdracht toevoegen</a></small> </h5>
     </div>
 
     <?php
-    if($result_opdr->num_rows > 0){
-		while($row = $result_opdr->fetch_assoc()){
+    if($allAssignments->num_rows > 0){
+		while($row = $allAssignments->fetch_assoc()){
 			?>
 			<tr>
 				<li><a href=<?php echo "docent_opdr.php?opdr="; echo $row["id"]; ?>><?php echo $row["naam"]; ?></a></li>
@@ -114,18 +119,7 @@ if(isset($_POST['submitAll'])) {
 <br />
 <?php
 if($opdrid != 0){
-	//echo 'De huidige waardes van deze opdracht zijn, klik op Save om deze te wijzigen'.'<br />';
-	if($currentValues->num_rows > 0){
-		while($row = $currentValues->fetch_assoc()){
-			$name = $row["naam"];
-			$description = $row["description"];
-			$level = $row["moeilijkheidsgraad"];
-			$category = $row["categorie"];
-			$requirements = $row["requirements"];
-			$template = $row["templatecode"];
-			$youtubeId = $row["youtubeid"];
-		}
-	}
+	
 	?>
 	<form action="" name="formvalues" method="post">
 
@@ -151,10 +145,11 @@ if($opdrid != 0){
 	<br />
 	</form>
 	<br />
+	
 	<form action="" method="POST" style="float: left;">
 		<input type="submit" name="deleteAccepted" value="DELETE">
 	</form>
-	<?php
+<?php
 }else{
 	echo "Selecteer een opdracht!";
 }
