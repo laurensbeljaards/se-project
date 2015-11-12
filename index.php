@@ -28,9 +28,9 @@ $youtubeId = $templateCode["youtubeid"];
 $templateCode = $templateCode["templatecode"];
 	
 //check if user already saved this assignment
-$sql = "SELECT * FROM `student_opdracht` WHERE `student_id` = " . $studentid . " AND `opdracht_id` = " . $opdrid . ";";
+$sql = "SELECT * FROM `student_opdracht` WHERE `username` = '" . $username . "' AND `opdracht_id` = " . $opdrid . ";";
 $alreadySaved = $conn->query($sql);
-$sql = "SELECT layout, werkt, testdata, overig FROM Feedback WHERE student_id=". $studentid . " AND opdracht_id=" . $opdrid;		
+$sql = "SELECT layout, werkt, testdata, overig FROM Feedback WHERE username='". $username . "' AND opdracht_id=" . $opdrid;		
 $feedbackResult = $conn->query($sql);
 if (!$alreadySaved) {
 	echo $conn->error;
@@ -42,13 +42,13 @@ if (!$alreadySaved) {
 		
 		if ($alreadySaved->num_rows > 0) {
 			//if assignment is already saved -> edit table
-			$sql = "UPDATE `student_opdracht` SET `code` = '" . $userCode . "' WHERE `student_id` = " . $studentid . " AND `opdracht_id` = " . $opdrid;
+			$sql = "UPDATE `student_opdracht` SET `code` = '" . $userCode . "' WHERE `username` = '" . $username . "' AND `opdracht_id` = " . $opdrid;
 			if (!$alreadySaved = $conn->query($sql)) {
 				echo $conn->error;
 			}
 		} else {
 			//if assignment is never saved -> create new
-			$sql = "INSERT INTO `student_opdracht` (`student_id`, `opdracht_id`, `code`) VALUES ('" . $studentid . "', '" . $opdrid . "', '" . $userCode . "')";
+			$sql = "INSERT INTO `student_opdracht` (`username`, `opdracht_id`, `code`) VALUES ('" . $username . "', '" . $opdrid . "', '" . $userCode . "')";
 			if (!$alreadySaved = $conn->query($sql)) {
 				echo $conn->error;
 			}
@@ -57,8 +57,8 @@ if (!$alreadySaved) {
 		//Save button not pressed -> Try load code
 		if ($alreadySaved->num_rows > 0) {
 			//Code already exists -> Load code
-			$row = $alreadySaved->fetch_row();
-			$userCode = $row[2];
+			$row = $alreadySaved->fetch_assoc();
+			$userCode = $row["code"];
 		} else {
 			//Code does not exist, load dummy code
 			$userCode = $templateCode;
