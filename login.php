@@ -51,7 +51,7 @@ if (!empty($_POST['submit'])){
 			$_SESSION['loggedInTeacher'] = $loggedInTeacher;//load the username and password and the 'loggedin' variable for the rest of the session
 			$_SESSION['username'] = $username;
 			$_SESSION['password'] = $password;
-			header("refresh:3;url=index.php");
+			header("refresh:3;url=checkassignments.php");
 			
 		}
 	}
