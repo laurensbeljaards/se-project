@@ -8,13 +8,22 @@
 		die('Could not connect: ' .$conn->connect_error);
 	}
 	
-	$sql_opdr = "SELECT * FROM opdrachten";
-	$result_opdr = $conn->query($sql_opdr);
+	
+	$sql = "SELECT * FROM opdrachten";
+	$result = $conn->query($sql);
 	
 	if(isset($_POST['submitAll'])) {
 		if(isset($_POST['name']) && isset($_POST['description']) && isset($_POST['level']) && isset($_POST['category']) && isset($_POST['requirements']) && isset($_POST['template']) && isset($_POST['youtubeId'])){
-			$sql = sprintf("INSERT INTO `opdrachten` (`id`, `naam`, `completed`, `description`, `moeilijkheidsgraad`, `categorie`, `requirements`, `templatecode`, `youtubeid`) VALUES (NULL, '%s', '0', '%s', '%s', '%s', '%s', '%s', '%s');", mysql_escape_string($_POST['name']), mysql_escape_string($_POST['description']), mysql_escape_string($_POST['level']), mysql_escape_string($_POST['category']), mysql_escape_string($_POST['requirements']), mysql_escape_string($_POST['template']), mysql_escape_string($_POST['youtubeId']));
+			$name = $conn->real_escape_string($_POST['name']);
+			$description = $conn->real_escape_string($_POST['description']);
+			$level = $conn->real_escape_string($_POST['level']);
+			$category = $conn->real_escape_string($_POST['category']);
+			$requirements = $conn->real_escape_string($_POST['requirements']);
+			$templatecode = $conn->real_escape_string($_POST['template']);
+			$youtubeid = $conn->real_escape_string($_POST['youtubeId']);
+			$sql = "INSERT INTO `opdrachten` (`id`, `naam`, `description`, `moeilijkheidsgraad`, `categorie`, `requirements`, `templatecode`, `youtubeid`) VALUES (NULL, '$name', '$description', '$level', '$category', '$requirements', '$templatecode', '$youtubeid')";
 			$conn->query($sql);
+			header("refresh:0;url=docent_opdr.php");
 		}
 	}
 	
@@ -30,8 +39,8 @@
     </div>
 
     <?php
-    if($result_opdr->num_rows > 0){
-		while($row = $result_opdr->fetch_assoc()){
+    if($result->num_rows > 0){
+		while($row = $result->fetch_assoc()){
 			?>
 			<tr>
 				<li><a href=<?php echo "docent_opdr.php?opdr="; echo $row["id"]; ?>><?php echo $row["naam"]; ?></a></li>

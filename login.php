@@ -9,24 +9,36 @@ if($conn->connect_errno) {
     die('Could not connect: ' .$conn->connect_error);
 }
 
-//$loggedInTeacher = 0;
 if (!empty($_POST['submit'])){
-	if($_POST['studentOrTeacher'] == 'student'){ //trying to log in as student
+	//trying to log in as student
+	if($_POST['studentOrTeacher'] == 'student'){ 
+		$username = "notexist";
+		$password = "notexisttoo";
+		
 		if (isset($_POST['username']) && isset($_POST['password'])){
 			$username = $_POST['username'];
 			$password = $_POST['password'];
 		}
-		$sql = "SELECT * from students WHERE username LIKE '{$username}' AND password LIKE '{$password}' LIMIT 1";
+		
+		$username = $conn->real_escape_string($username);
+		$password = $conn->real_escape_string($password);
+		$sql = "SELECT * from students WHERE username = '$username' AND password = '$password' LIMIT 1";
 		$result = $conn->query($sql);
-		if (!$result->num_rows == 1) { //the user didnt enter an username with password that exists in our databse
+		
+		//the user didnt enter an username with password that exists in our databse
+		if (!$result->num_rows == 1) { 
 			echo "<p>Invalid username/password combination</p>"; 
 		}
-		else { //in this case the user did enter a right couple of password+username
+		//in this case the user did enter a right pair of password+username
+		else { 
 			echo "<p>Logged in successfully.<br>You are being redirected to the index page....</p>";
+			//and is now loggedin as student
 			$loggedInStudent = '1'; 
-			$loggedInTeacher = '0';//and is now loggedin as student
+			$loggedInTeacher = '0';
+			
+			//load the username and password and the 'loggedin' variable for the rest of the session
 			$_SESSION['loggedInStudent'] = $loggedInStudent; 
-			$_SESSION['loggedInTeacher'] = $loggedInTeacher;//load the username and password and the 'loggedin' variable for the rest of the session
+			$_SESSION['loggedInTeacher'] = $loggedInTeacher;
 			$_SESSION['username'] = $username;
 			$_SESSION['password'] = $password;
 			header("refresh:3;url=index.php");
@@ -34,21 +46,33 @@ if (!empty($_POST['submit'])){
 		}
 	}
 	if($_POST['studentOrTeacher'] == 'teacher'){
+		$username = "notexist";
+		$password = "notexisttoo";
+		
 		if (isset($_POST['username']) && isset($_POST['password'])){
 			$username = $_POST['username'];
 			$password = $_POST['password'];
 		}
-		$sql = "SELECT * from teachers WHERE username LIKE '{$username}' AND password LIKE '{$password}' LIMIT 1";
+		
+		$username = $conn->real_escape_string($username);
+		$password = $conn->real_escape_string($password);
+		$sql = "SELECT * from teachers WHERE username LIKE '$username' AND password LIKE '{$password}' LIMIT 1";
 		$result = $conn->query($sql);
-		if (!$result->num_rows == 1) { //the user didnt enter an username with password that exists in our databse
+		
+		//the user didnt enter an username with password that exists in our databse
+		if (!$result->num_rows == 1) { 
 			echo "<p>Invalid username/password combination</p>"; 
 		}
-		else { //in this case the user did enter a right couple of password+username
+		//in this case the user did enter a right couple of password+username
+		else { 
 			echo "<p>Logged in successfully.<br>You are being redirected to the index page....</p>";
 			$loggedInStudent = '0'; 
-			$loggedInTeacher = '1';//and is now loggedin as student
+			//and is now loggedin as student
+			$loggedInTeacher = '1';
+			
+			//load the username and password and the 'loggedin' variable for the rest of the session
 			$_SESSION['loggedInStudent'] = $loggedInStudent; 
-			$_SESSION['loggedInTeacher'] = $loggedInTeacher;//load the username and password and the 'loggedin' variable for the rest of the session
+			$_SESSION['loggedInTeacher'] = $loggedInTeacher;
 			$_SESSION['username'] = $username;
 			$_SESSION['password'] = $password;
 			header("refresh:3;url=checkassignments.php");
