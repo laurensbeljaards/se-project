@@ -131,7 +131,8 @@ if($opdrid != 0){
 	<br />
 	<label>Categorie</label>:	<input type="text" name="category" value="<?php echo $category; ?>"/>
 	<br />
-	<label>Requirements</label>:	<textarea rows="5" cols="10" name="requirements" id="textarea" class="codetextarea_docent"><?php echo $requirements; ?></textarea>
+	<label>Requirements</label>:
+	<textarea rows="5" cols="10" name="requirements" id="textarea" class="codetextarea_docent_requirements"><?php echo $requirements; ?></textarea>
 	<br />
 	<label>Youtube-ID</label>:	<input type="text" name="youtubeId" value="<?php echo $youtubeId; ?>"/>
 	<br />
