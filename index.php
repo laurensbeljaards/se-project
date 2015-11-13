@@ -3,7 +3,7 @@ require_once('config.php');
 
 if(!$loggedInStudent){
 	//error if student is not logged in
-	header('Location: 404.php');
+	header('Location: login.php');
 }
 
 include $BASEDIR . 'header/header.php';
