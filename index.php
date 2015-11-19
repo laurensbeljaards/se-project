@@ -3,7 +3,7 @@ require_once('config.php');
 
 if(!$loggedInStudent){
 	//error if student is not logged in
-	header('Location: 404.php');
+	header('Location: login.php');
 }
 
 include $BASEDIR . 'header/header.php';
@@ -69,6 +69,18 @@ if (!$alreadySaved) {
 		} else {
 			//Code does not exist, load dummy code
 			$userCode = $templateCode;
+		}
+		
+		if (isset($_POST["mayBeChecked"])) {
+			if ($alreadySaved->num_rows > 0) {
+				//mark the assignment to be checked.
+				$sql = "UPDATE `student_opdracht` SET `readytocheck` = '1' WHERE `username` = '" . $username . "' AND `opdracht_id` = " . $opdrid . ";";
+				$checked = $conn->query($sql);
+				echo "<script type='text/javascript'>alert('De opdracht staat gemarkeerd om te worden nagekeken.');</script>";
+			} else {
+				//the assignment has not been saved yet.
+				echo "<script type='text/javascript'>alert('Sla code op voordat deze kan worden nagekeken...');</script>";
+			}
 		}
 	}	
 	
@@ -210,6 +222,10 @@ mysqli_close($conn);
 	<form id="submitCode" method="post">
 		<input type="submit" value="Sla de code op">
 	</form>
+	
+	<form id="mayBeChecked" method="post">
+        <input type="submit" value="Mijn opgeslagen code kan worden nagekeken" style="float:left" name="mayBeChecked">
+    </form>
 </div>
 
 <script>

@@ -54,33 +54,38 @@
 	
 </div>
 
+<br />
+<h1>Opdracht Toevoegen: </h1>
+<hr class="hr"/>
+<br />
 	<h1>Nieuwe opdracht</h1>
-	<form action="" name="formvalues" method="post">
-	Naam:
-	<input type="text" name="name" value=""/>	
-	<br />
-	Ondertitel:
-	<input type="text" name="description" value=""/>	
-	<br />
-	Moeilijkheidsgraad:
-	<input type="number" name="level" value=""/>
-	<br />
-	Categorie:
-	<input type="text" name="category" value=""/>
-	<br />
-	Requirements:
-	<input type="text" name="requirements" value=""/>
-	<br />
-	Youtube-ID:
-	<input type="text" name="youtubeId" value=""/>
-	<br />
-	Template code:
-	<textarea rows="10" cols="40" name="template" id="textarea" class="codetextarea"></textarea>
-	<br />
-	<input type="submit" name="submitAll" value="Save" />
-	</form>
+	<form <form action="" name="formvalues" method="post">
 
-<script>
+    	<label>Naam</label>: <input type="text" name="name" value=""/>	
+    	<br />
+
+    	<label>Ondertitel</label>: <input type="text" name="description" value=""/>	
+    	<br />
+
+    	<label>Moeilijkheidsgraad</label>: <input type="number" name="level" value=""/>
+    	<br />
+
+    	<label>Categorie</label>: <input type="text" name="category" value=""/>
+    	<br />
+    	<label>Requirements</label>:
+        <textarea rows="5" cols="10" name="requirements" class="codetextarea_docent_requirements"></textarea>
+
+    	<br />
+
+    	<label>Youtube-ID</label>: <input type="text" name="youtubeId" value=""/>
+    	<br />
+    	<label>Template Code</label>:
+
+        <textarea rows="5" cols="10" name="template" id="textarea" class="codetextarea_docent"></textarea>
+    	<br />
+        <br />
+    	<input type="submit" name="submitAll" value="Save" />
+	</form><script>
                 document.querySelector("textarea").addEventListener
                 ('keypress',function(keystroke) {//ignores special keys like shift and tab (eg shift + ] is }, but } will then not be recognised)
                     if (keystroke.keyCode === 13) {//The keystroke was an [enter]
