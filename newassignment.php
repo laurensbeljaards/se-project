@@ -1,20 +1,29 @@
 <?php
-	require_once($BASEDIR . 'config.php');
+	require_once('config.php');
 
 	include $BASEDIR . 'header/header.php';
 
-	$conn = new mysqli($server, $username, $password, $database);
+	$conn = new mysqli($server, $usernamedb, $passworddb, $database);
 	if($conn->connect_errno) {
 		die('Could not connect: ' .$conn->connect_error);
 	}
 	
-	$sql_opdr = "SELECT * FROM opdrachten";
-	$result_opdr = $conn->query($sql_opdr);
+	
+	$sql = "SELECT * FROM opdrachten";
+	$result = $conn->query($sql);
 	
 	if(isset($_POST['submitAll'])) {
 		if(isset($_POST['name']) && isset($_POST['description']) && isset($_POST['level']) && isset($_POST['category']) && isset($_POST['requirements']) && isset($_POST['template']) && isset($_POST['youtubeId'])){
-			$sql = sprintf("INSERT INTO `opdrachten` (`id`, `naam`, `completed`, `description`, `moeilijkheidsgraad`, `categorie`, `requirements`, `templatecode`, `youtubeid`) VALUES (NULL, '%s', '0', '%s', '%s', '%s', '%s', '%s', '%s');", mysql_escape_string($_POST['name']), mysql_escape_string($_POST['description']), mysql_escape_string($_POST['level']), mysql_escape_string($_POST['category']), mysql_escape_string($_POST['requirements']), mysql_escape_string($_POST['template']), mysql_escape_string($_POST['youtubeId']));
+			$name = $conn->real_escape_string($_POST['name']);
+			$description = $conn->real_escape_string($_POST['description']);
+			$level = $conn->real_escape_string($_POST['level']);
+			$category = $conn->real_escape_string($_POST['category']);
+			$requirements = $conn->real_escape_string($_POST['requirements']);
+			$templatecode = $conn->real_escape_string($_POST['template']);
+			$youtubeid = $conn->real_escape_string($_POST['youtubeId']);
+			$sql = "INSERT INTO `opdrachten` (`id`, `naam`, `description`, `moeilijkheidsgraad`, `categorie`, `requirements`, `templatecode`, `youtubeid`) VALUES (NULL, '$name', '$description', '$level', '$category', '$requirements', '$templatecode', '$youtubeid')";
 			$conn->query($sql);
+			header("refresh:0;url=docent_opdr.php");
 		}
 	}
 	
@@ -30,8 +39,8 @@
     </div>
 
     <?php
-    if($result_opdr->num_rows > 0){
-		while($row = $result_opdr->fetch_assoc()){
+    if($result->num_rows > 0){
+		while($row = $result->fetch_assoc()){
 			?>
 			<tr>
 				<li><a href=<?php echo "docent_opdr.php?opdr="; echo $row["id"]; ?>><?php echo $row["naam"]; ?></a></li>
@@ -45,33 +54,38 @@
 	
 </div>
 
+<br />
+<h1>Opdracht Toevoegen: </h1>
+<hr class="hr"/>
+<br />
 	<h1>Nieuwe opdracht</h1>
-	<form action="" name="formvalues" method="post">
-	Naam:
-	<input type="text" name="name" value=""/>	
-	<br />
-	Ondertitel:
-	<input type="text" name="description" value=""/>	
-	<br />
-	Moeilijkheidsgraad:
-	<input type="number" name="level" value=""/>
-	<br />
-	Categorie:
-	<input type="text" name="category" value=""/>
-	<br />
-	Requirements:
-	<input type="text" name="requirements" value=""/>
-	<br />
-	Youtube-ID:
-	<input type="text" name="youtubeId" value=""/>
-	<br />
-	Template code:
-	<textarea rows="10" cols="40" name="template" id="textarea" class="codetextarea"></textarea>
-	<br />
-	<input type="submit" name="submitAll" value="Save" />
-	</form>
+	<form <form action="" name="formvalues" method="post">
 
-<script>
+    	<label>Naam</label>: <input type="text" name="name" value=""/>	
+    	<br />
+
+    	<label>Ondertitel</label>: <input type="text" name="description" value=""/>	
+    	<br />
+
+    	<label>Moeilijkheidsgraad</label>: <input type="number" name="level" value=""/>
+    	<br />
+
+    	<label>Categorie</label>: <input type="text" name="category" value=""/>
+    	<br />
+    	<label>Requirements</label>:
+        <textarea rows="5" cols="10" name="requirements" class="codetextarea_docent_requirements"></textarea>
+
+    	<br />
+
+    	<label>Youtube-ID</label>: <input type="text" name="youtubeId" value=""/>
+    	<br />
+    	<label>Template Code</label>:
+
+        <textarea rows="5" cols="10" name="template" id="textarea" class="codetextarea_docent"></textarea>
+    	<br />
+        <br />
+    	<input type="submit" name="submitAll" value="Save" />
+	</form><script>
                 document.querySelector("textarea").addEventListener
                 ('keypress',function(keystroke) {//ignores special keys like shift and tab (eg shift + ] is }, but } will then not be recognised)
                     if (keystroke.keyCode === 13) {//The keystroke was an [enter]

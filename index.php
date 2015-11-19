@@ -1,9 +1,14 @@
 <?php
 require_once('config.php');
 
+if(!$loggedInStudent){
+	//error if student is not logged in
+	header('Location: login.php');
+}
+
 include $BASEDIR . 'header/header.php';
 
-$conn = new mysqli($server, $username, $password, $database);
+$conn = new mysqli($server, $usernamedb, $passworddb, $database);
 if($conn->connect_errno) {
     die('Could not connect: ' .$conn->connect_error);
 }
@@ -17,37 +22,40 @@ if (isset($_GET["opdr"])) {
 	$opdrid = 0;
 }
 
-$sql = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
-$allRequirements = $conn->query($sql);
+//$assignmentDetails contains all details of the assignment
+$opdrid = $conn->real_escape_string($opdrid);
+$sql = "SELECT * FROM opdrachten WHERE id = '$opdrid'";
+$sqlresult = $conn->query($sql);
+$assignmentDetails = $sqlresult->fetch_assoc();
 
-$sql = "SELECT * FROM opdrachten WHERE id = '{$opdrid}'";
-$templateResult = $conn->query($sql);
-$templateCode = $templateResult->fetch_assoc();
-$youtubeId = $templateCode["youtubeid"];
-$templateCode = $templateCode["templatecode"];
+$youtubeId = $assignmentDetails["youtubeid"];
+$templateCode = $assignmentDetails["templatecode"];
 	
 //check if user already saved this assignment
-$sql = "SELECT * FROM `student_opdracht` WHERE `student_id` = " . $studentid . " AND `opdracht_id` = " . $opdrid . ";";
+$username = $conn->real_escape_string($username);
+$opdrid = $conn->real_escape_string($opdrid);
+$sql = "SELECT * FROM `student_opdracht` WHERE `username` = '$username' AND `opdracht_id` = '$opdrid'";
 $alreadySaved = $conn->query($sql);
-$sql = "SELECT layout, werkt, testdata, overig FROM Feedback WHERE student_id=". $studentid . " AND opdracht_id=" . $opdrid;		
+
+$sql = "SELECT layout, werkt, testdata, overig FROM Feedback WHERE username='$username' AND opdracht_id='$opdrid'";		
 $feedbackResult = $conn->query($sql);
+
 if (!$alreadySaved) {
 	echo $conn->error;
 }
-
 	if (isset($_POST["userCode"])) {
 		//Save button pressed -> Save the file
 		$userCode = htmlspecialchars($_POST["userCode"]);
 		
 		if ($alreadySaved->num_rows > 0) {
 			//if assignment is already saved -> edit table
-			$sql = "UPDATE `student_opdracht` SET `code` = '" . $userCode . "' WHERE `student_id` = " . $studentid . " AND `opdracht_id` = " . $opdrid;
+			$sql = "UPDATE `student_opdracht` SET `code` = '" . $userCode . "' WHERE `username` = '" . $username . "' AND `opdracht_id` = " . $opdrid;
 			if (!$alreadySaved = $conn->query($sql)) {
 				echo $conn->error;
 			}
 		} else {
 			//if assignment is never saved -> create new
-			$sql = "INSERT INTO `student_opdracht` (`student_id`, `opdracht_id`, `code`) VALUES ('" . $studentid . "', '" . $opdrid . "', '" . $userCode . "')";
+			$sql = "INSERT INTO `student_opdracht` (`username`, `opdracht_id`, `code`) VALUES ('" . $username . "', '" . $opdrid . "', '" . $userCode . "')";
 			if (!$alreadySaved = $conn->query($sql)) {
 				echo $conn->error;
 			}
@@ -56,104 +64,108 @@ if (!$alreadySaved) {
 		//Save button not pressed -> Try load code
 		if ($alreadySaved->num_rows > 0) {
 			//Code already exists -> Load code
-			$row = $alreadySaved->fetch_row();
-			$userCode = $row[2];
+			$row = $alreadySaved->fetch_assoc();
+			$userCode = $row["code"];
 		} else {
 			//Code does not exist, load dummy code
 			$userCode = $templateCode;
 		}
-	}
+		
+		if (isset($_POST["mayBeChecked"])) {
+			if ($alreadySaved->num_rows > 0) {
+				//mark the assignment to be checked.
+				$sql = "UPDATE `student_opdracht` SET `readytocheck` = '1' WHERE `username` = '" . $username . "' AND `opdracht_id` = " . $opdrid . ";";
+				$checked = $conn->query($sql);
+				echo "<script type='text/javascript'>alert('De opdracht staat gemarkeerd om te worden nagekeken.');</script>";
+			} else {
+				//the assignment has not been saved yet.
+				echo "<script type='text/javascript'>alert('Sla code op voordat deze kan worden nagekeken...');</script>";
+			}
+		}
+	}	
 	
 mysqli_close($conn);
+
 ?>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
 
-<?php
-if($allRequirements->num_rows > 0){
-    $row = $allRequirements->fetch_assoc();
-?>
 <div class="requirements">
-    <h2><?php echo $row["naam"]; ?></h2>
-    <p><?php echo $row["requirements"]; ?></p>
+    <h2><?php echo $assignmentDetails["naam"]; ?></h2>
+    <p><?php echo $assignmentDetails["requirements"]; ?></p>
 </div>
-<?php
-}
-?>
-
 
 <div class="extrainfoheader">
-	<!--<div style='margin-top: 40px;'>&nbsp </div>-->
-		<div class="extrainfosub">
-			<h5>Feedback:</h5>
-		</div>
-				<?php
-					// checkt eerst of er feedback is voor de opdracht, als dit het geval is dan print het de feedback op het scherm.
-					if ($feedbackResult->num_rows > 0) {
-						echo "<h5>Goed</h5>";
-						$row = $feedbackResult->fetch_assoc();
-						if($row["layout"]){
-							echo "Layout<br>";
-						}
-						if($row["werkt"]){
-							echo "Compileren<br>";
+	<div class="extrainfosub">
+		<h5>Feedback:</h5>
+	</div>
+	<?php
+		// checkt eerst of er feedback is voor de opdracht, als dit het geval is dan print het de feedback op het scherm.
+		if ($feedbackResult->num_rows > 0) {
+			echo "<h5>Goed</h5>";
+			$row = $feedbackResult->fetch_assoc();
+			if($row["layout"]){
+				echo "Layout<br>";
+			}
+			if($row["werkt"]){
+				echo "Compileren<br>";
 
-						}
-						if($row["testdata"]){
-							echo "Basis requirements<br>";
-						}
-						if($row["overig"]){
-							echo "Extra requirements<br>";
-						}
-						echo "<h5>Niet goed</h5>";
-						if(!$row["layout"]){
-							echo "Layout<br>";
-						}
-						if(!$row["werkt"]){
-							echo "Compileren<br>";
+			}
+			if($row["testdata"]){
+				echo "Basis requirements<br>";
+			}
+			if($row["overig"]){
+				echo "Extra requirements<br>";
+			}
+			echo "<h5>Niet goed</h5>";
+			if(!$row["layout"]){
+				echo "Layout<br>";
+			}
+			if(!$row["werkt"]){
+				echo "Compileren<br>";
 
-						}
-						if(!$row["testdata"]){
-							echo "Basis requirements<br>";
-						}
-						if(!$row["overig"]){
-							echo "Extra requirements<br>";
-						}
-					}
-					else{
-						echo "Je hebt voor deze opdracht nog geen feedback ontvangen.";
-					}
-		?>
+			}
+			if(!$row["testdata"]){
+				echo "Basis requirements<br>";
+			}
+			if(!$row["overig"]){
+				echo "Extra requirements<br>";
+			}
+		}
+		else{
+			echo "Je hebt voor deze opdracht nog geen feedback ontvangen.";
+		}
+	?>
 	<div class="extrainfosub">
 		<h5>Available Tasks:</h5>
-    </div>
+	</div>
 	<div>
-        <?php
-        if($allAssignments->num_rows > 0){
-            while($row = $allAssignments->fetch_assoc()){
-                echo '<a href ="index.php?opdr='.$row["id"].'"><li id ="' . $row["id"] . '">'. $row["naam"] . '</li></a>';
-                echo '<div style="width: 240px" id ="hidden' . $row["id"]. '">' . $row["description"] . '</div>'; 
-                
-                 ?>
-                 <script type="text/javascript">
-						$(function() {
-							$('#<?php echo "hidden".$row["id"]; ?>').hide();
-							$('#<?php echo $row["id"]; ?>').hover(function() { 
+	<?php
+	if($allAssignments->num_rows > 0){
+		while($row = $allAssignments->fetch_assoc()){
+			echo '<a href ="index.php?opdr='.$row["id"].'"><li id ="' . $row["id"] . '">'. $row["naam"] . '</li></a>';
+			echo '<div style="width: 240px" id ="hidden' . $row["id"]. '">' . $row["description"] . '</div>'; 
+			
+			 ?>
+			 <script type="text/javascript">
+					$(function() {
+						$('#<?php echo "hidden".$row["id"]; ?>').hide();
+						$('#<?php echo $row["id"]; ?>').hover(function() { 
+							$('#<?php echo "hidden".$row["id"]; ?>').show();
+							$('#<?php echo "hidden".$row["id"]; ?>').hover(function(){
 								$('#<?php echo "hidden".$row["id"]; ?>').show();
-								$('#<?php echo "hidden".$row["id"]; ?>').hover(function(){
-									$('#<?php echo "hidden".$row["id"]; ?>').show();
-								}, function(){
-									$('#<?php echo "hidden".$row["id"]; ?>').hide();
-								});
-							}, function() { 
-								$('#<?php echo "hidden".$row["id"]; ?>').hide(); 
+							}, function(){
+								$('#<?php echo "hidden".$row["id"]; ?>').hide();
 							});
+						}, function() { 
+							$('#<?php echo "hidden".$row["id"]; ?>').hide(); 
 						});
-                    </script>
+					});
+				</script>
 
-                <?php
-            }
-        }
-        ?>
+			<?php
+		}
+	}
+	?>
 
 	</div>
 
@@ -210,6 +222,10 @@ if($allRequirements->num_rows > 0){
 	<form id="submitCode" method="post">
 		<input type="submit" value="Sla de code op">
 	</form>
+	
+	<form id="mayBeChecked" method="post">
+        <input type="submit" value="Mijn opgeslagen code kan worden nagekeken" style="float:left" name="mayBeChecked">
+    </form>
 </div>
 
 <script>
