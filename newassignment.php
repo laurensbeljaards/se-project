@@ -12,6 +12,9 @@
 	$sql = "SELECT * FROM opdrachten";
 	$result = $conn->query($sql);
 	
+	$sql = "SELECT DISTINCT `categorie`, `youtubeid` FROM `opdrachten` WHERE `youtubeid` IS NOT NULL";
+	$allYTvids = $conn->query($sql);
+	
 	if(isset($_POST['submitAll'])) {
 		if(isset($_POST['name']) && isset($_POST['description']) && isset($_POST['level']) && isset($_POST['category']) && isset($_POST['requirements']) && isset($_POST['template']) && isset($_POST['youtubeId'])){
 			$name = $conn->real_escape_string($_POST['name']);
@@ -77,7 +80,21 @@
 
     	<br />
 
-    	<label>Youtube-ID</label>: <input type="text" name="youtubeId" value=""/>
+    	<label>Youtube-ID</label>: <input type="text" name="youtubeId" value="" id ="YTidField"/>
+		<script>
+			function changeYTid() {
+				var e = document.getElementById("YTlist");
+				var strUser = e.options[e.selectedIndex].value;
+				document.getElementById('YTidField').value = strUser;
+			}
+			
+			window.onload = changeYTid;
+		</script>
+		<select onchange="changeYTid()" id="YTlist">
+			<?php while($row = $allYTvids->fetch_assoc()){ ?>
+			<option value="<?php echo $row["youtubeid"] ?>"><?php echo $row["categorie"] ?></option>
+			<?php } ?>
+		</select>
     	<br />
     	<label>Template Code</label>:
 
