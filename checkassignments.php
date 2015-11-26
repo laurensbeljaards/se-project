@@ -91,8 +91,8 @@ $assignmentsList = $conn->query($sql);
         $hideAssignment = $conn->query($sql);
 		
 		//Causes the view to longer show this student's assignment.
-        //$url = $RELPATH . "checkassignments.php";
-        //echo "<script>window.location = '" . $url . "'</script>";
+        $url = $RELPATH . "checkassignments.php";
+        echo "<script>window.location = '" . $url . "'</script>";
 
     }
 mysqli_close($conn);
