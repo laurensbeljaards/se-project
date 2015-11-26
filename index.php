@@ -1,5 +1,6 @@
 <?php
 require_once('config.php');
+$page = $_SESSION['page'] = 'opdrachten';
 
 if(!$loggedInStudent){
 	//error if student is not logged in
@@ -99,44 +100,101 @@ mysqli_close($conn);
 		<h5>Feedback:</h5>
 	</div>
 	<?php
-		// checkt eerst of er feedback is voor de opdracht, als dit het geval is dan print het de feedback op het scherm.
-		if ($feedbackResult->num_rows > 0) {
-			echo "<h5>Goed</h5>";
-			$row = $feedbackResult->fetch_assoc();
-			if($row["layout"]){
-				echo "Layout<br>";
-			}
-			if($row["werkt"]){
-				echo "Compileren<br>";
+        $layout = 0;
+        $werking = 0;
+        $testdata = 0;
+        $overig = 0;
+        // checkt eerst of er feedback is voor de opdracht, als dit het geval is dan print het de feedback op het scherm.
+        if ($feedbackResult->num_rows > 0) {
+            $row = $feedbackResult->fetch_assoc();
+            if($row["layout"]){
+                $layout = 1;
+            }
+            if($row["werkt"]){
+                $werking = 1;
 
-			}
-			if($row["testdata"]){
-				echo "Basis requirements<br>";
-			}
-			if($row["overig"]){
-				echo "Extra requirements<br>";
-			}
-			echo "<h5>Niet goed</h5>";
-			if(!$row["layout"]){
-				echo "Layout<br>";
-			}
-			if(!$row["werkt"]){
-				echo "Compileren<br>";
+            }
+            if($row["testdata"]){
+                $testdata = 1;
+            }
+            if($row["overig"]){
+                $overig = 1;
+            }
+            ?>
+                <table>
+                <tr>
+                    <td>Layout</td><td></td>
+                    <td>Werking</td><td></td>
+                    <td>Testdata</td><td></td>
+                    <td>Overig</td><td></td>
+                </tr>
+                <tr>
+                    <td> <?php if($layout == 0){ ?> <img class="small" src="images/wrong.png" /> <?php } else if($layout == 1) { ?> <img class="small" src="images/correct.png" /> <?php } ?> </td><td></td>
+                    <td> <?php if($werking == 0){ ?> <img class="small" src="images/wrong.png" /> <?php } else if($werking == 1) { ?> <img class="small" src="images/correct.png" /> <?php } ?> </td><td></td>
+                    <td> <?php if($testdata == 0){ ?> <img class="small" src="images/wrong.png" /> <?php } else if($testdata == 1) { ?> <img class="small" src="images/correct.png" /> <?php } ?> </td><td></td>
+                    <td> <?php if($overig == 0){ ?> <img class="small" src="images/wrong.png" /> <?php } else if($overig == 1) { ?> <img class="small" src="images/correct.png" /> <?php } ?>  </td><td></td>
+                </tr>
+                </table>
+        <?php
+        }
+        else{
+            echo "Je hebt voor deze opdracht nog geen feedback ontvangen.";
+        }
+?>
 
-			}
-			if(!$row["testdata"]){
-				echo "Basis requirements<br>";
-			}
-			if(!$row["overig"]){
-				echo "Extra requirements<br>";
-			}
-		}
-		else{
-			echo "Je hebt voor deze opdracht nog geen feedback ontvangen.";
-		}
-	?>
 	<div class="extrainfosub">
-		<h5>Available Tasks:</h5>
+		<h5>Instructievideo:</h5>
+	</div>
+	<div id="player">
+		<p>Voor deze opdracht is geen YouTube video beschikbaar.</p>
+	</div>
+	
+	<?php
+	if($youtubeId != NULL) {
+		echo '
+	<script>
+      // 2. This code loads the IFrame Player API code asynchronously.
+      var tag = document.createElement(\'script\');
+
+      tag.src = "https://www.youtube.com/iframe_api";
+      var firstScriptTag = document.getElementsByTagName(\'script\')[0];
+      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+      // 3. This function creates an <iframe> (and YouTube player)
+      //    after the API code downloads.
+      var player;
+      function onYouTubeIframeAPIReady() {
+        player = new YT.Player(\'player\', {
+          height: \'225\',
+          width: \'400\',
+          videoId: \'' . $youtubeId . '\',
+          events: {
+            \'onReady\': onPlayerReady,
+            \'onStateChange\': onPlayerStateChange
+          }
+        });
+      }
+
+      // 4. The API will call this function when the video player is ready.
+      function onPlayerReady(event) {
+        //event.target.playVideo();
+      }
+
+      // 5. The API calls this function when the player\'s state changes.
+      //    The function indicates that when playing a video (state=1),
+      //    the player should play for six seconds and then stop.
+      var done = false;
+      function onPlayerStateChange(event) {
+
+      }
+      function stopVideo() {
+        player.stopVideo();
+      }
+    </script>';}
+	?>
+	
+	<div class="extrainfosub">
+		<h5>Beschikbare opdrachten:</h5>
 	</div>
 	<div>
 	<?php
@@ -168,64 +226,17 @@ mysqli_close($conn);
 	?>
 
 	</div>
-
-	<div id="player">
-		<p>Voor deze opdracht is geen YouTube video beschikbaar.</p>
-	</div>
-	<?php
-	if($youtubeId != NULL) {
-		echo '
-	<script>
-      // 2. This code loads the IFrame Player API code asynchronously.
-      var tag = document.createElement(\'script\');
-
-      tag.src = "https://www.youtube.com/iframe_api";
-      var firstScriptTag = document.getElementsByTagName(\'script\')[0];
-      firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-
-      // 3. This function creates an <iframe> (and YouTube player)
-      //    after the API code downloads.
-      var player;
-      function onYouTubeIframeAPIReady() {
-        player = new YT.Player(\'player\', {
-          height: \'157\',
-          width: \'280\',
-          videoId: \'' . $youtubeId . '\',
-          events: {
-            \'onReady\': onPlayerReady,
-            \'onStateChange\': onPlayerStateChange
-          }
-        });
-      }
-
-      // 4. The API will call this function when the video player is ready.
-      function onPlayerReady(event) {
-        //event.target.playVideo();
-      }
-
-      // 5. The API calls this function when the player\'s state changes.
-      //    The function indicates that when playing a video (state=1),
-      //    the player should play for six seconds and then stop.
-      var done = false;
-      function onPlayerStateChange(event) {
-
-      }
-      function stopVideo() {
-        player.stopVideo();
-      }
-    </script>';}
-	?>
 </div>
 
-<div class="">
-    <textarea rows="25" cols="85" name="userCode" id="textarea" class="codetextarea" form="submitCode"><?php echo $userCode; ?></textarea>
+<div class="sideDiv">
 	<form id="submitCode" method="post">
-		<input type="submit" value="Sla de code op">
+		<input type="submit" value="Sla de code op" class="docent_submit">
 	</form>
 	
 	<form id="mayBeChecked" method="post">
-        <input type="submit" value="Mijn opgeslagen code kan worden nagekeken" style="float:left" name="mayBeChecked">
+        <input type="submit" value="Mijn opgeslagen code kan worden nagekeken" name="mayBeChecked" class="docent_submit">
     </form>
+	<div class="textareaWrapper"><textarea rows="25" cols="85" name="userCode" id="textarea" class="codetextarea" form="submitCode"><?php echo $userCode; ?></textarea></div>
 </div>
 
 <script>
