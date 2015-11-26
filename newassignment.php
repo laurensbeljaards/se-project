@@ -1,8 +1,14 @@
 <?php
 	require_once('config.php');
 
+$page = $_SESSION['page'] = 'docent_opdr';
 	include $BASEDIR . 'header/header.php';
 
+	if(!$loggedInTeacher){
+		//error if student is not logged in
+		header('Location: login.php');
+	}
+	
 	$conn = new mysqli($server, $usernamedb, $passworddb, $database);
 	if($conn->connect_errno) {
 		die('Could not connect: ' .$conn->connect_error);
@@ -26,7 +32,7 @@
 			$youtubeid = $conn->real_escape_string($_POST['youtubeId']);
 			$sql = "INSERT INTO `opdrachten` (`id`, `naam`, `description`, `moeilijkheidsgraad`, `categorie`, `requirements`, `templatecode`, `youtubeid`) VALUES (NULL, '$name', '$description', '$level', '$category', '$requirements', '$templatecode', '$youtubeid')";
 			$conn->query($sql);
-			header("refresh:0;url=docent_opdr.php");
+			header("refresh:0;url=newassignment.php");
 		}
 	}
 	
@@ -61,26 +67,20 @@
 <h1>Opdracht Toevoegen: </h1>
 <hr class="hr"/>
 <br />
-	<h1>Nieuwe opdracht</h1>
-	<form <form action="" name="formvalues" method="post">
+	<form action="" name="formvalues" method="post">
 
-    	<label>Naam</label>: <input type="text" name="name" value=""/>	
-    	<br />
-
-    	<label>Ondertitel</label>: <input type="text" name="description" value=""/>	
-    	<br />
-
-    	<label>Moeilijkheidsgraad</label>: <input type="number" name="level" value=""/>
-    	<br />
-
-    	<label>Categorie</label>: <input type="text" name="category" value=""/>
-    	<br />
-    	<label>Requirements</label>:
-        <textarea rows="5" cols="10" name="requirements" class="codetextarea_docent_requirements"></textarea>
-
-    	<br />
-
-    	<label>Youtube-ID</label>: <input type="text" name="youtubeId" value="" id ="YTidField"/>
+	<label>Naam</label>:	<input type="text" name="name" value=""/>
+	<br />
+	<label>Ondertitel</label>:	<input type="text" name="description" value=""/>	
+	<br />
+	<label>Moeilijkheidsgraad</label>:	<input type="text" name="level" value=""/>
+	<br />
+	<label>Categorie</label>:	<input type="text" name="category" value=""/>
+	<br />
+	<label>Requirements</label>:
+	<textarea rows="5" cols="10" name="requirements" id="textarea" class="codetextarea_docent_requirements"></textarea>
+	<br />
+	<label>Youtube-ID</label>: <input type="text" name="youtubeId" value="" id ="YTidField"/>
 		<script>
 			function changeYTid() {
 				var e = document.getElementById("YTlist");
@@ -95,14 +95,19 @@
 			<option value="<?php echo $row["youtubeid"] ?>"><?php echo $row["categorie"] ?></option>
 			<?php } ?>
 		</select>
-    	<br />
-    	<label>Template Code</label>:
+	<br />
 
-        <textarea rows="5" cols="10" name="template" id="textarea" class="codetextarea_docent"></textarea>
-    	<br />
-        <br />
-    	<input type="submit" name="submitAll" value="Save" />
-	</form><script>
+	<label>Template code</label>:
+	<textarea rows="5" cols="10" name="template" id="textarea" class="codetextarea_docent"></textarea>
+	<br />
+	<br />
+
+	<input type="submit" name="submitAll" value="Save" class="docent_submit"/>
+	<br />
+	</form>
+	<br />
+	
+	<script>
                 document.querySelector("textarea").addEventListener
                 ('keypress',function(keystroke) {//ignores special keys like shift and tab (eg shift + ] is }, but } will then not be recognised)
                     if (keystroke.keyCode === 13) {//The keystroke was an [enter]

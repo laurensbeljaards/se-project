@@ -1,9 +1,10 @@
 <?php
 require_once('config.php');
+$page = $_SESSION['page'] = 'docent_opdr';
 
 if(!$loggedInTeacher){
 	//als geen docent weergeef error
-	header('Location: 404.php');
+	header('Location: login.php');
 }
 
 include $BASEDIR . 'header/header.php';
@@ -103,7 +104,7 @@ mysqli_close($conn);
 		while($row = $allAssignments->fetch_assoc()){
 			?>
 			<tr>
-				<li><a href=<?php echo "docent_opdr.php?opdr="; echo $row["id"]; ?>><?php echo $row["naam"]; ?></a></li>
+				<li><a <?php if($opdrid == $row["id"]) echo "style='font-weight: bold;'"; ?> href=<?php echo "docent_opdr.php?opdr="; echo $row["id"]; ?>><?php echo $row["naam"]; ?></a></li>
 			</tr>
 			<?php
 		}
@@ -142,16 +143,16 @@ if($opdrid != 0){
 	<br />
 	<br />
 
-	<input type="submit" name="submitAll" value="Save" />
+	<input type="submit" name="submitAll" value="Save" class="docent_submit"/>
 	<br />
 	</form>
 	<br />
 	
 	<form action="" method="POST" style="float: left;">
-		<input type="submit" name="deleteAccepted" value="DELETE">
+		<input type="submit" name="deleteAccepted" value="DELETE" class="docent_submit">
 	</form>
 <?php
 }else{
-	echo "Selecteer een opdracht!";
+	echo "Selecteer een opdracht om te wijzigen.";
 }
 ?>
