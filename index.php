@@ -48,6 +48,12 @@ if (!$alreadySaved) {
 		//Save button pressed -> Save the file
 		$userCode = htmlspecialchars($_POST["userCode"]);
 		
+        //award 'Cheater' badge if the submitted assignment contains the word 'cheat' (upercases also allowed due to strtolower).
+        if (strpos(strtolower($userCode),'cheat') !== false) {
+            $sql = "INSERT INTO `student_badge` (`badgeid`, `username`, `timestamp`) VALUES ('13', '$username', CURRENT_TIMESTAMP);";
+            $conn->query($sql);
+        }
+        
 		if ($alreadySaved->num_rows > 0) {
 			//if assignment is already saved -> edit table
 			$sql = "UPDATE `student_opdracht` SET `code` = '" . $userCode . "' WHERE `username` = '" . $username . "' AND `opdracht_id` = " . $opdrid;

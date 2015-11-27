@@ -15,15 +15,32 @@
 </head>
 
 <body>
-<!--
-<script src="<?php echo $RELPATH . 'script.js'; ?>"></script>
-<div class="badge-shell">
+<?php 
+	//if the student is logged in go into the database and load all his badges
+	if($loggedInStudent == 1){
+		$conn = new mysqli($server, $usernamedb, $passworddb, $database);
+		if($conn->connect_errno) {
+			die('Could not connect: ' .$conn->connect_error);
+		}
+		$sql = "SELECT badgeid FROM student_badge WHERE username = '$username'";
+		$sqlBadges = $conn->query($sql);
+		$numberOfBadges = $sqlBadges->num_rows;
+		$badges;
+		if ($sqlBadges->num_rows > 0) {
+            for($i=0; $i<$numberOfBadges; $i++){
+				$badgesSql = $sqlBadges->fetch_assoc();
+				$badges[$i] = $badgesSql["badgeid"];
+			}
+		}
+		mysqli_close($conn);
+?>
+<!--<div class="badge-shell">
     <div class="badgeBar" id="badgeBar"></div>
-</div>
-<script>
-    fillBadgeBar();
-</script>
--->
+</div>-->
+
+<?php }//if logged in as student ?>
+
+
 
 
 <div id='cssmenu'>
@@ -45,7 +62,8 @@
         <?php echo "Logged in as " . $username . ", Log uit"; ?> </a></li> 
         <?php }
         else{ 
-        ?> <li><a href='login.php'>Login</a></li> 
+        ?> <li><a href='login.php'>Login</a></li>
+
         <?php } ?>
 
 
@@ -79,8 +97,35 @@
         <?php
     }
     ?>
+
+
+
     </ul>
+<?php if($loggedInStudent == 1){?>
+    <div class="badge-shell">
+        <div class="badgeBar" id="badgeBar"></div>
+    </div>
+<?php }?>
 </div>
+
+
+<script>
+function fillBadgeBar() { //fills the badgebar according to the data from the database (above php code)
+    <?php for($i = 0; $i < 20; $i++) { ?>
+        var li = document.createElement("li");
+        li.className = "badge";
+        var badgeBar = document.getElementById("badgeBar");
+        <?php if ($i < $numberOfBadges) { ?>
+            li.style.backgroundImage = 'url(Badges/'+<?php echo $badges[$i]; ?>+'.jpg)';
+            <?php } else { ?>
+                li.style.backgroundImage = 'url(Badges/Locked_Icon.jpg)';
+                <?php } ?>
+        badgeBar.appendChild(li);
+        <?php } ?>
+}
+fillBadgeBar(); //call the function
+</script>
+
 
 <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
 <script src="script.js" type="text/javascript"></script>
