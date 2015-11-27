@@ -124,6 +124,7 @@ a:hover{
   border: 1px solid #B30000;
   margin-top: 60px;
   margin-right: -1px;
+  margin-left: -6px;
   background-color: white;
 }
 
@@ -191,6 +192,39 @@ h5 {
   border-color: #c9c9c9; 
 }
 
+/* Badges */
+.maininfo{
+  float: left;
+  width: 80%;
+  height: 100%;
+  padding: 5px;
+
+}
+
+.badge_display{
+  width: 550px;
+  height: 80px;
+  margin: 5px;
+  margin-right: 25px; 
+  float: left;
+}
+
+.badge_pic{
+  height: 75px;
+  width: 75px;
+  float: left;
+  margin: 2px;
+  border: 1px solid black;
+}
+
+.badge_description{
+  width: 452px;
+  height: 65px;
+  float: right;
+  margin: 2px;
+  padding: 5px;
+  border: 1px solid #BBBBBB;
+}
 
 /* Codearea */
 .codetextarea{

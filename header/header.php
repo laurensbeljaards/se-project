@@ -51,7 +51,7 @@
         <li><a href='#'>Home</a></li>
         <li <?php if($page == "opdrachten")echo"class='active'"; ?> ><a href='index.php'>Opdrachten</a></li>
         <li <?php if($page == "achievements")echo"class='active'"; ?> ><a href='#'>Achievements</a></li>
-
+		<li <?php if($page == "badges")echo"class='active'"; ?> ><a href='my_badges.php'>My Badges</a></li>
 
         <?php 
         if($loggedInStudent == 1){ 
