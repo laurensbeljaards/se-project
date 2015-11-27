@@ -50,7 +50,7 @@ if (!$alreadySaved) {
 		
         //award 'Cheater' badge if the submitted assignment contains the word 'cheat' (upercases also allowed due to strtolower).
         if (strpos(strtolower($userCode),'cheat') !== false) {
-            $sql = "INSERT INTO `Se`.`student_badge` (`badgeid`, `username`, `timestamp`) VALUES ('13', '" . $username . "', CURRENT_TIMESTAMP);";
+            $sql = "INSERT INTO `student_badge` (`badgeid`, `username`, `timestamp`) VALUES ('13', '$username', CURRENT_TIMESTAMP);";
             $conn->query($sql);
         }
         
