@@ -14,6 +14,10 @@ if($conn->connect_errno) {
     die('Could not connect: ' .$mysqli->connect_error);
 }
 
+//initialitation
+$opdracht_id = 0;
+$student_username = "notset";
+
 //Check if parameters are set and get usercode for selected assignment
 if(isset($_GET['opdr']) && isset($_GET['student'])){
 	$opdracht_id = $conn->real_escape_string($_GET['opdr']);
@@ -89,6 +93,34 @@ $assignmentsList = $conn->query($sql);
         //After the student's assignment has been checked, it is no longer marked as ready to check.
         $sql = "UPDATE `student_opdracht` SET `readytocheck` = '0' WHERE `student_opdracht`.`username` = '" . $student_username . "' AND `student_opdracht`.`opdracht_id` = " . $opdracht_id . "";
         $hideAssignment = $conn->query($sql);
+		
+		//Get an array from all the assignments the student has finished.
+		$query = "SELECT `opdracht_id` FROM `Feedback` WHERE `username` = '$student_username' AND ((`layout` = '1' AND `werkt` = '1') AND (`testdata` = '1' AND `overig` = '1')) ORDER BY `opdracht_id` ASC;";
+		$result = $conn->query($query);
+		$array= array();
+		while($row = $result->fetch_assoc()){
+			$array[]=$row['opdracht_id'];
+		}
+		
+		//Get all assignments
+		$query = "SELECT `id` FROM `opdrachten` ORDER BY `id` ASC";
+		$result = $conn->query($query);
+		$allAssignments = array();
+		while($row = $result->fetch_assoc()){
+			$allAssignments[]=$row['id'];
+		}
+		
+		//Check if student has finished all assignments and if the student does and doesn't the badge yet, award the badge to the student.
+		if($array == $allAssignments){
+			$badge = "6";
+			$badge = $conn->real_escape_string($badge);
+			$query = "SELECT * FROM `student_badge` WHERE `username` = '$student_username' AND `badgeid` = '$badge'";
+			$result = $conn->query($query);
+			if(!$result->num_rows==1){
+				$query = "INSERT INTO `student_badge`(`badgeid`, `username`) VALUES ('$badge', '$student_username')";
+				$result = $conn->query($query);
+			}
+		}
 		
 		//Causes the view to longer show this student's assignment.
         $url = $RELPATH . "checkassignments.php";
