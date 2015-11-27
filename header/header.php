@@ -34,26 +34,12 @@
 		}
 		mysqli_close($conn);
 ?>
-<div class="badge-shell">
+<!--<div class="badge-shell">
     <div class="badgeBar" id="badgeBar"></div>
-</div>
-<script>
-function fillBadgeBar() { //fills the badgebar according to the data from the database (above php code)
-    <?php for($i = 0; $i < 20; $i++) { ?>
-        var li = document.createElement("li");
-        li.className = "badge";
-        var badgeBar = document.getElementById("badgeBar");
-        <?php if ($i < $numberOfBadges) { ?>
-            li.style.backgroundImage = 'url(Badges/'+<?php echo $badges[$i]; ?>+'.jpg)';
-        <?php } else { ?>
-            li.style.backgroundImage = 'url(Badges/Locked_Icon.jpg)';
-        <?php } ?>
-        badgeBar.appendChild(li);
-    <?php } ?>
-}
-fillBadgeBar(); //call the function
-</script>
+</div>-->
+
 <?php }//if logged in as student ?>
+
 
 
 
@@ -76,7 +62,8 @@ fillBadgeBar(); //call the function
         <?php echo "Logged in as " . $username . ", Log uit"; ?> </a></li> 
         <?php }
         else{ 
-        ?> <li><a href='login.php'>Login</a></li> 
+        ?> <li><a href='login.php'>Login</a></li>
+
         <?php } ?>
 
 
@@ -110,8 +97,35 @@ fillBadgeBar(); //call the function
         <?php
     }
     ?>
+
+
+
     </ul>
+<?php if($loggedInStudent == 1){?>
+    <div class="badge-shell">
+        <div class="badgeBar" id="badgeBar"></div>
+    </div>
+<?php }?>
 </div>
+
+
+<script>
+function fillBadgeBar() { //fills the badgebar according to the data from the database (above php code)
+    <?php for($i = 0; $i < 20; $i++) { ?>
+        var li = document.createElement("li");
+        li.className = "badge";
+        var badgeBar = document.getElementById("badgeBar");
+        <?php if ($i < $numberOfBadges) { ?>
+            li.style.backgroundImage = 'url(Badges/'+<?php echo $badges[$i]; ?>+'.jpg)';
+            <?php } else { ?>
+                li.style.backgroundImage = 'url(Badges/Locked_Icon.jpg)';
+                <?php } ?>
+        badgeBar.appendChild(li);
+        <?php } ?>
+}
+fillBadgeBar(); //call the function
+</script>
+
 
 <meta http-equiv="Content-type" content="text/html; charset=utf-8"/>
 <script src="script.js" type="text/javascript"></script>
