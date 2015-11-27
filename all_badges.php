@@ -46,7 +46,7 @@ if($get_badges->num_rows > 0){
 
 	<div class="badge_display">
 		<div class="badge_pic">
-			badge pic
+			<img src="<?php echo $RELPATH;?>Badges/<?php echo $row["badgeid"]; ?>.jpg" />
 		</div>
 		<div class="badge_description">
 			<h2><?php echo $row["name"]; ?></h2>

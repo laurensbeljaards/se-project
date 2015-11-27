@@ -95,7 +95,7 @@ $assignmentsList = $conn->query($sql);
         $hideAssignment = $conn->query($sql);
 		
 		//Get an array from all the assignments the student has finished.
-		$query = "SELECT `opdracht_id` FROM `feedback` WHERE `username` = '$student_username' AND ((`layout` = '1' AND `werkt` = '1') AND (`testdata` = '1' AND `overig` = '1')) ORDER BY `opdracht_id` ASC;";
+		$query = "SELECT `opdracht_id` FROM `Feedback` WHERE `username` = '$student_username' AND ((`layout` = '1' AND `werkt` = '1') AND (`testdata` = '1' AND `overig` = '1')) ORDER BY `opdracht_id` ASC;";
 		$result = $conn->query($query);
 		$array= array();
 		while($row = $result->fetch_assoc()){
