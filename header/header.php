@@ -1,6 +1,7 @@
 <?php
 //$loggedInStudent = 0;
 //$loggedInDocent = 0;
+//$page = $_SESSION['page'] = '1';
 ?>
 
 <!DOCTYPE html>
@@ -30,46 +31,50 @@
     <?php
     if($loggedInStudent){
         ?>
-        <li class='active'><a href='#'>Home</a></li>
-        <li><a href='index.php'>Opdrachten</a></li>
-        <li><a href='#'>Achievements</a></li>
-        <li><a href='#'>About C Sharper</a></li>
+        <li><a href='#'>Home</a></li>
+        <li <?php if($page == "opdrachten")echo"class='active'"; ?> ><a href='index.php'>Opdrachten</a></li>
+        <li <?php if($page == "achievements")echo"class='active'"; ?> ><a href='#'>Achievements</a></li>
+
+
         <?php 
         if($loggedInStudent == 1){ 
         ?> <li><a href='logout.php'>
-        <?php echo "Logged in as " . $username . ", click here to logout"; ?> </a></li> 
+        <?php echo "Logged in as " . $username . ", Log uit"; ?> </a></li> 
         <?php }else if($loggedInTeacher == 1){ 
         ?> <li><a href='logout.php'>
-        <?php echo "Logged in as " . $username . ", click here to logout"; ?> </a></li> 
+        <?php echo "Logged in as " . $username . ", Log uit"; ?> </a></li> 
         <?php }
         else{ 
         ?> <li><a href='login.php'>Login</a></li> 
         <?php } ?>
+
+
+
         <?php
-        echo " Ingelogd als Student.";
+
     }else if($loggedInTeacher){
         ?>
-        <li class='active'><a href='#'>Home</a></li>
-        <li><a href='docent_opdr.php'>Opdrachten</a></li>
-		<li><a href='checkassignments.php'>Nakijken</a></li>
-        <li><a href='#'>About C Sharper</a></li>
+        <li><a href='#'>Home</a></li>
+        <li <?php if($page == "docent_opdr")echo"class='active'"; ?> ><a href='docent_opdr.php'>Opdrachten</a></li>
+		<li <?php if($page == "checkassignments")echo"class='active'"; ?> ><a href='checkassignments.php'>Nakijken</a></li>
+
         <?php 
         if($loggedInStudent == 1){ 
         ?> <li><a href='logout.php'>
-        <?php echo "Logged in as " . $username . ", click here to logout"; ?> </a></li> 
+        <?php echo "Logged in as " . $username . ", Log uit"; ?> </a></li> 
         <?php }else if($loggedInTeacher == 1){ 
         ?> <li><a href='logout.php'>
-        <?php echo "Logged in as " . $username . ", click here to logout"; ?> </a></li> 
+        <?php echo "Logged in as " . $username . ", Log uit"; ?> </a></li> 
         <?php }
         else{ 
         ?> <li><a href='login.php'>Login</a></li> 
         <?php } ?>
         <?php
-        echo " Ingelogd als Docent.";
+
     }else{
         ?>
-        <li class='active'><a href='#'>Home</a></li>
-        <li><a href='login.php'>Registreren / Aanmelden</a></li>
+        <li><a href='#'>Home</a></li>
+        <li <?php if($page == "registreren")echo"class='active'"; ?> ><a href='login.php'>Registreren / Aanmelden</a></li>
         <li><a href='#'>About C Sharper</a></li>
         <?php
     }
