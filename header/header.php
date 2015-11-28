@@ -50,16 +50,16 @@
         ?>
         <li><a href='#'>Home</a></li>
         <li <?php if($page == "opdrachten")echo"class='active'"; ?> ><a href='index.php'>Opdrachten</a></li>
-        <li <?php if($page == "achievements")echo"class='active'"; ?> ><a href='#'>Achievements</a></li>
-		<li <?php if($page == "badges")echo"class='active'"; ?> ><a href='my_badges.php'>My Badges</a></li>
+        <li <?php if($page == "leaderbord")echo"class='active'"; ?> ><a href='leaderboard.php'>Leaderboard</a></li>
+        <li <?php if($page == "badges")echo"class='active'"; ?> ><a href='my_badges.php'>My Badges</a></li>
 
         <?php 
         if($loggedInStudent == 1){ 
         ?> <li><a href='logout.php'>
-        <?php echo "Logged in as " . $username . ", Log uit"; ?> </a></li> 
+        <?php echo "Log Uit"; ?> </a></li> 
         <?php }else if($loggedInTeacher == 1){ 
         ?> <li><a href='logout.php'>
-        <?php echo "Logged in as " . $username . ", Log uit"; ?> </a></li> 
+        <?php echo "Log Uit"; ?> </a></li> 
         <?php }
         else{ 
         ?> <li><a href='login.php'>Login</a></li>
@@ -74,15 +74,16 @@
         ?>
         <li><a href='#'>Home</a></li>
         <li <?php if($page == "docent_opdr")echo"class='active'"; ?> ><a href='docent_opdr.php'>Opdrachten</a></li>
+        <li <?php if($page == "leaderbord")echo"class='active'"; ?> ><a href='leaderboard.php'>Leaderboard</a></li>
 		<li <?php if($page == "checkassignments")echo"class='active'"; ?> ><a href='checkassignments.php'>Nakijken</a></li>
 
         <?php 
         if($loggedInStudent == 1){ 
         ?> <li><a href='logout.php'>
-        <?php echo "Logged in as " . $username . ", Log uit"; ?> </a></li> 
+        <?php echo "Log Uit"; ?> </a></li> 
         <?php }else if($loggedInTeacher == 1){ 
         ?> <li><a href='logout.php'>
-        <?php echo "Logged in as " . $username . ", Log uit"; ?> </a></li> 
+        <?php echo "Log Uit"; ?> </a></li> 
         <?php }
         else{ 
         ?> <li><a href='login.php'>Login</a></li> 

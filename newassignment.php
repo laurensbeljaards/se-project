@@ -65,7 +65,7 @@ $page = $_SESSION['page'] = 'docent_opdr';
 
 <br />
 <h1>Opdracht Toevoegen: </h1>
-<hr class="hr"/>
+<hr class="hr"/><hr class="hr"/>
 <br />
 	<form action="" name="formvalues" method="post">
 

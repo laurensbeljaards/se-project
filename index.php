@@ -154,14 +154,15 @@ mysqli_close($conn);
 
 ?>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
-
+<!--
 <div class="requirements">
     <h2><?php echo $assignmentDetails["naam"]; ?></h2>
     <p><?php echo $assignmentDetails["requirements"]; ?></p>
 </div>
+-->
 
-<div class="extrainfoheader">
-	<div class="extrainfosub">
+<div class="extrainfoheader_student">
+	<div class="extrainfosub_student">
 		<h5>Feedback:</h5>
 	</div>
 	<?php
@@ -207,7 +208,7 @@ mysqli_close($conn);
         }
 ?>
 
-	<div class="extrainfosub">
+	<div class="extrainfosub_student">
 		<h5>Instructievideo:</h5>
 	</div>
 	<div id="player">
@@ -230,8 +231,8 @@ mysqli_close($conn);
       var player;
       function onYouTubeIframeAPIReady() {
         player = new YT.Player(\'player\', {
-          height: \'225\',
-          width: \'400\',
+          height: \'197\',
+          width: \'350\',
           videoId: \'' . $youtubeId . '\',
           events: {
             \'onReady\': onPlayerReady,
@@ -258,7 +259,7 @@ mysqli_close($conn);
     </script>';}
 	?>
 	
-	<div class="extrainfosub">
+	<div class="extrainfosub_student">
 		<h5>Beschikbare opdrachten:</h5>
 	</div>
 	<div>
@@ -293,16 +294,27 @@ mysqli_close($conn);
 	</div>
 </div>
 
-<div class="sideDiv">
-	<form id="submitCode" method="post">
-		<input type="submit" value="Sla de code op" class="docent_submit">
+	<?php
+	if (isset($_GET["opdr"])) {
+	?>
+
+
+	<br />
+	<h1><?php echo $assignmentDetails["naam"]; ?>: </h1>
+	<h2><?php echo $assignmentDetails["requirements"]; ?></h2>
+	<hr class="hr"/><hr class="hr"/>
+	<br />
+
+	<div class="maininfo_student">
+
+	<form id="submitCode" method="post" style="float:left;">
+		<label><input type="submit" value="Sla de code op" class="docent_submit"></label>
 	</form>
 	
 	<form id="mayBeChecked" method="post">
         <input type="submit" value="Mijn opgeslagen code kan worden nagekeken" name="mayBeChecked" class="docent_submit">
     </form>
 	<div class="textareaWrapper"><textarea rows="25" cols="85" name="userCode" id="textarea" class="codetextarea" form="submitCode"><?php echo $userCode; ?></textarea></div>
-</div>
 
 <script>
 	document.querySelector("textarea").addEventListener
@@ -384,5 +396,22 @@ mysqli_close($conn);
 			}
 		 },false);
 	</script>
+	
+	</div>
+	<?php
+	}else{
+	?>
+
+	<br />
+	<h1>Opdracht Maken: </h1>
+	<h2>Selecteer eerst een opdracht!</h2>
+	<hr class="hr"/><hr class="hr"/>
+	<br />
+
+	<div class="maininfo_student">
+	<p>Selecteer een opdracht.</p>
+	<?php
+	}
+	?>
 </body>
 </html>
