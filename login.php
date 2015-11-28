@@ -9,6 +9,8 @@
 $loggedInStudent = 0;
 $loggedInTeacher = 0;
 require_once('config.php');
+//sets standard timezone to The Netherlands for function date()
+date_default_timezone_set("Australia/Adelaide");
 //include $BASEDIR . 'header/header.php';
 
 $conn = new mysqli($server, $usernamedb, $passworddb, $database);
@@ -55,6 +57,18 @@ if (!empty($_POST['submit'])){
 			header("refresh:3;url=docent_opdr.php");	
 		}else{
 			//student
+			//checks if time of login is between 00:00 and 06:00 and gives badge to user if they don't have it already. 
+			$hourOfDay = date('G');
+			if($hourOfDay <= 6){
+				$badge = "12";
+				$badge = $conn->real_escape_string($badge);
+				$query = "SELECT * FROM student_badge WHERE username='$username' AND badgeid='$badge'";
+				$result = $conn->query($query);
+				if(!$result->num_rows==1){
+					$query = "INSERT INTO `student_badge`(`badgeid`, `username`) VALUES ('$badge', '$username')";
+					$result = $conn->query($query);
+				}
+			}
 			$_SESSION['loggedInStudent'] = '1'; 
 			$_SESSION['loggedInTeacher'] = '0';
 			$_SESSION['username'] = $username;

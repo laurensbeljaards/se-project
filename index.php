@@ -48,6 +48,12 @@ if (!$alreadySaved) {
 		//Save button pressed -> Save the file
 		$userCode = htmlspecialchars($_POST["userCode"]);
 		
+        //award 'Cheater' badge if the submitted assignment contains the word 'cheat' (upercases also allowed due to strtolower).
+        if (strpos(strtolower($userCode),'cheat') !== false) {
+            $sql = "INSERT INTO `student_badge` (`badgeid`, `username`, `timestamp`) VALUES ('13', '$username', CURRENT_TIMESTAMP);";
+            $conn->query($sql);
+        }
+        
 		if ($alreadySaved->num_rows > 0) {
 			//if assignment is already saved -> edit table
 			$sql = "UPDATE `student_opdracht` SET `code` = '" . $userCode . "' WHERE `username` = '" . $username . "' AND `opdracht_id` = " . $opdrid;
@@ -84,6 +90,65 @@ if (!$alreadySaved) {
 			}
 		}
 	}	
+	
+	$sql = "SELECT * FROM Feedback WHERE username = '$username' AND layout = '1' AND werkt = '1' AND testdata = '1' AND overig = '1'";
+	$result = $conn->query($sql);
+	$count = $result->num_rows;
+	if($count >= 1)
+	{
+		$sql = "SELECT * from student_badge WHERE badgeid = '1' AND username = '$username'";
+		$result = $conn->query($sql);
+		$row = $result->num_rows;
+		if($row == 0)
+		{
+			$sql = sprintf("INSERT INTO `student_badge` (`badgeid`, `username`) VALUES ('%s','%s');", mysql_escape_string('1'), mysql_escape_string($username));
+			$conn->query($sql);
+		}
+		if($count >= 5)
+		{		
+			$sql = "SELECT * from student_badge WHERE badgeid = '2' AND username = '$username'";
+			$result = $conn->query($sql);
+			$row = $result->num_rows;
+			if($row == 0)
+			{
+				$sql = sprintf("INSERT INTO `student_badge` (`badgeid`, `username`) VALUES ('%s','%s');", mysql_escape_string('2'), mysql_escape_string($username));
+					$conn->query($sql);
+			}
+			if($count >= 10)
+			{		
+				$sql = "SELECT * from student_badge WHERE badgeid = '3' AND username = '$username'";
+				$result = $conn->query($sql);
+				$row = $result->num_rows;
+				if($row == 0)
+				{
+					$sql = sprintf("INSERT INTO `student_badge` (`badgeid`, `username`) VALUES ('%s','%s');", mysql_escape_string('3'), mysql_escape_string($username));
+					$conn->query($sql);
+				}
+				if($count >= 20)
+				{		
+					$sql = "SELECT * from student_badge WHERE badgeid = '4' AND username = '$username'";
+					$result = $conn->query($sql);
+					$row = $result->num_rows;
+					if($row == 0)
+					{
+						$sql = sprintf("INSERT INTO `student_badge` (`badgeid`, `username`) VALUES ('%s','%s');", mysql_escape_string('4'), mysql_escape_string($username));
+						$conn->query($sql);
+					}
+					if($count >= 30)
+					{
+						$sql = "SELECT * from student_badge WHERE badgeid = '5' AND username = '$username'";
+						$result = $conn->query($sql);
+						$row = $result->num_rows;
+						if($row == 0)
+						{
+							$sql = sprintf("INSERT INTO `student_badge` (`badgeid`, `username`) VALUES ('%s','%s');", mysql_escape_string('5'), mysql_escape_string($username));
+							$conn->query($sql);
+						}
+					}
+				}
+			}
+		}
+	}
 	
 mysqli_close($conn);
 
