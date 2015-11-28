@@ -48,6 +48,12 @@ if (!$alreadySaved) {
 		//Save button pressed -> Save the file
 		$userCode = htmlspecialchars($_POST["userCode"]);
 		
+        //award 'Cheater' badge if the submitted assignment contains the word 'cheat' (upercases also allowed due to strtolower).
+        if (strpos(strtolower($userCode),'cheat') !== false) {
+            $sql = "INSERT INTO `student_badge` (`badgeid`, `username`, `timestamp`) VALUES ('13', '$username', CURRENT_TIMESTAMP);";
+            $conn->query($sql);
+        }
+        
 		if ($alreadySaved->num_rows > 0) {
 			//if assignment is already saved -> edit table
 			$sql = "UPDATE `student_opdracht` SET `code` = '" . $userCode . "' WHERE `username` = '" . $username . "' AND `opdracht_id` = " . $opdrid;
@@ -85,18 +91,78 @@ if (!$alreadySaved) {
 		}
 	}	
 	
+	$sql = "SELECT * FROM Feedback WHERE username = '$username' AND layout = '1' AND werkt = '1' AND testdata = '1' AND overig = '1'";
+	$result = $conn->query($sql);
+	$count = $result->num_rows;
+	if($count >= 1)
+	{
+		$sql = "SELECT * from student_badge WHERE badgeid = '1' AND username = '$username'";
+		$result = $conn->query($sql);
+		$row = $result->num_rows;
+		if($row == 0)
+		{
+			$sql = sprintf("INSERT INTO `student_badge` (`badgeid`, `username`) VALUES ('%s','%s');", mysql_escape_string('1'), mysql_escape_string($username));
+			$conn->query($sql);
+		}
+		if($count >= 5)
+		{		
+			$sql = "SELECT * from student_badge WHERE badgeid = '2' AND username = '$username'";
+			$result = $conn->query($sql);
+			$row = $result->num_rows;
+			if($row == 0)
+			{
+				$sql = sprintf("INSERT INTO `student_badge` (`badgeid`, `username`) VALUES ('%s','%s');", mysql_escape_string('2'), mysql_escape_string($username));
+					$conn->query($sql);
+			}
+			if($count >= 10)
+			{		
+				$sql = "SELECT * from student_badge WHERE badgeid = '3' AND username = '$username'";
+				$result = $conn->query($sql);
+				$row = $result->num_rows;
+				if($row == 0)
+				{
+					$sql = sprintf("INSERT INTO `student_badge` (`badgeid`, `username`) VALUES ('%s','%s');", mysql_escape_string('3'), mysql_escape_string($username));
+					$conn->query($sql);
+				}
+				if($count >= 20)
+				{		
+					$sql = "SELECT * from student_badge WHERE badgeid = '4' AND username = '$username'";
+					$result = $conn->query($sql);
+					$row = $result->num_rows;
+					if($row == 0)
+					{
+						$sql = sprintf("INSERT INTO `student_badge` (`badgeid`, `username`) VALUES ('%s','%s');", mysql_escape_string('4'), mysql_escape_string($username));
+						$conn->query($sql);
+					}
+					if($count >= 30)
+					{
+						$sql = "SELECT * from student_badge WHERE badgeid = '5' AND username = '$username'";
+						$result = $conn->query($sql);
+						$row = $result->num_rows;
+						if($row == 0)
+						{
+							$sql = sprintf("INSERT INTO `student_badge` (`badgeid`, `username`) VALUES ('%s','%s');", mysql_escape_string('5'), mysql_escape_string($username));
+							$conn->query($sql);
+						}
+					}
+				}
+			}
+		}
+	}
+	
 mysqli_close($conn);
 
 ?>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.2.6/jquery.min.js"></script>
-
+<!--
 <div class="requirements">
     <h2><?php echo $assignmentDetails["naam"]; ?></h2>
     <p><?php echo $assignmentDetails["requirements"]; ?></p>
 </div>
+-->
 
-<div class="extrainfoheader">
-	<div class="extrainfosub">
+<div class="extrainfoheader_student">
+	<div class="extrainfosub_student">
 		<h5>Feedback:</h5>
 	</div>
 	<?php
@@ -142,7 +208,7 @@ mysqli_close($conn);
         }
 ?>
 
-	<div class="extrainfosub">
+	<div class="extrainfosub_student">
 		<h5>Instructievideo:</h5>
 	</div>
 	<div id="player">
@@ -165,8 +231,8 @@ mysqli_close($conn);
       var player;
       function onYouTubeIframeAPIReady() {
         player = new YT.Player(\'player\', {
-          height: \'225\',
-          width: \'400\',
+          height: \'197\',
+          width: \'350\',
           videoId: \'' . $youtubeId . '\',
           events: {
             \'onReady\': onPlayerReady,
@@ -193,7 +259,7 @@ mysqli_close($conn);
     </script>';}
 	?>
 	
-	<div class="extrainfosub">
+	<div class="extrainfosub_student">
 		<h5>Beschikbare opdrachten:</h5>
 	</div>
 	<div>
@@ -228,16 +294,27 @@ mysqli_close($conn);
 	</div>
 </div>
 
-<div class="sideDiv">
-	<form id="submitCode" method="post">
-		<input type="submit" value="Sla de code op" class="docent_submit">
+	<?php
+	if (isset($_GET["opdr"])) {
+	?>
+
+
+	<br />
+	<h1><?php echo $assignmentDetails["naam"]; ?>: </h1>
+	<h2><?php echo $assignmentDetails["requirements"]; ?></h2>
+	<hr class="hr"/><hr class="hr"/>
+	<br />
+
+	<div class="maininfo_student">
+
+	<form id="submitCode" method="post" style="float:left;">
+		<label><input type="submit" value="Sla de code op" class="docent_submit"></label>
 	</form>
 	
 	<form id="mayBeChecked" method="post">
         <input type="submit" value="Mijn opgeslagen code kan worden nagekeken" name="mayBeChecked" class="docent_submit">
     </form>
 	<div class="textareaWrapper"><textarea rows="25" cols="85" name="userCode" id="textarea" class="codetextarea" form="submitCode"><?php echo $userCode; ?></textarea></div>
-</div>
 
 <script>
 	document.querySelector("textarea").addEventListener
@@ -319,5 +396,22 @@ mysqli_close($conn);
 			}
 		 },false);
 	</script>
+	
+	</div>
+	<?php
+	}else{
+	?>
+
+	<br />
+	<h1>Opdracht Maken: </h1>
+	<h2>Selecteer eerst een opdracht!</h2>
+	<hr class="hr"/><hr class="hr"/>
+	<br />
+
+	<div class="maininfo_student">
+	<p>Selecteer een opdracht.</p>
+	<?php
+	}
+	?>
 </body>
 </html>

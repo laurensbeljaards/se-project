@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="css/main1.css">
+<link rel="stylesheet" href="css/main_login.css">
 <title>Login</title>
 </head>
 <body>
@@ -52,14 +52,14 @@ if (!empty($_POST['submit'])){
 			$_SESSION['loggedInTeacher'] = '1';
 			$_SESSION['username'] = $username;
 			$_SESSION['password'] = $password;
-			header("refresh:3;url=docent_opdr.php");	
+			header("refresh:2;url=docent_opdr.php");	
 		}else{
 			//student
 			$_SESSION['loggedInStudent'] = '1'; 
 			$_SESSION['loggedInTeacher'] = '0';
 			$_SESSION['username'] = $username;
 			$_SESSION['password'] = $password;
-			header("refresh:3;url=index.php");	
+			header("refresh:2;url=index.php");	
 		}	
 	}
 }
@@ -68,27 +68,25 @@ if($loggedInStudent == 0 && $loggedInTeacher == 0){ ?>
 <form id="login-form" class="login-form" name="form1" method="post" action="login.php">
 	    	<input type="hidden" name="is_login" value="1">
 	        <div class="h1">Login</div>
-	        <div id="form-content">
+	     	<div style="margin-left: 60px;">
 	            <div class="group">
-	                <label for="username">Username</label>
-	                <div><input id="email" name="username" class="form-control required" type="textarea" placeholder="Username"></div>
+	                <label>Username</label>
+	                <input id="email" name="username" type="text" placeholder="Username">
 	            </div>
 	           <div class="group">
-	                <label for="name">Password</label>
-	                <div><input id="password" name="password" class="form-control required" type="password" placeholder="Password"></div>
+	                <label>Password</label>
+	                <input id="password" name="password"  type="password" placeholder="Password">
 	            </div>
 	            
 	            <div class="group submit">
 	                <label class="empty"></label>
 	                <div><input name="submit" type="submit" value="Submit"/></div>
 	            </div>
+
 	            <div class="group"> 
-	            <br />
-	            <br />
-	            <br />
-	            <br />
-					<div><a href="<?php echo $RELPATH . 'register.php'?>"><h3>Nog niet geregistreerd?</h3></a></div>
+					<div><a href="<?php echo $RELPATH . 'register.php'?>"><small>Nog niet geregistreerd?</small></a></div>
 	            </div>
+
 	        </div>
 	        <div id="form-loading" class="hide"><i class="fa fa-circle-o-notch fa-spin"></i></div>
 	    </form>
