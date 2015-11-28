@@ -33,7 +33,7 @@ $get_badges = $conn->query($sql);
 
 <br />
 <h1>Alle Badges: </h1>
-<hr class="hr"/>
+<hr class="hr"/><hr class="hr"/>
 <br />
 
 
@@ -46,7 +46,7 @@ if($get_badges->num_rows > 0){
 
 	<div class="badge_display">
 		<div class="badge_pic">
-			<img src="<?php echo $RELPATH;?>Badges/<?php echo $row["badgeid"]; ?>.jpg" />
+			<img src="<?php echo $RELPATH;?>Badges/<?php echo $row["badgeid"]; ?>.jpg" height="75" width="75" />
 		</div>
 		<div class="badge_description">
 			<h2><?php echo $row["name"]; ?></h2>

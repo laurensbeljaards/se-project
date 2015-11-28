@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="css/main1.css">
+<link rel="stylesheet" href="css/main_register.css">
 
 <?php
 $loggedInStudent = 0;
@@ -69,7 +69,7 @@ if(isset($_POST['submitR'])) // button after registration
 								echo "<font color='white'><h3>Registreren was succesvol!</h3></font>";
 								$sql = sprintf("INSERT INTO `users` (`username`, `password`, `firstname`, `lastname`) VALUES ('%s','%s','%s','%s');", mysql_escape_string($_POST['usernameR']), mysql_escape_string($_POST['passwordR']), mysql_escape_string($_POST['firstnameR']), mysql_escape_string($_POST['lastnameR']));
 								$conn->query($sql);
-								header("refresh:3;url=login.php");
+								header("refresh:2;url=login.php");
 							}	
 						}
 					}
@@ -84,32 +84,37 @@ if($loggedInStudent == 0 && $loggedInTeacher == 0){ ?>
 	    	<input type="hidden" name="is_login" value="1">
 	        <div class="h1">Registreren</div>
 	        <div id="form-content">
-<tr>	            
+<tr>	    <div style="margin-left: 60px;">     
 	            <div class="group">
 	                <label for="username">Username</label>
-	                <div><input id="username" name="usernameR" class="form-control required" type="textarea" placeholder="Username"></div>
+	                <input id="username" name="usernameR" type="text" placeholder="Username">
 	            </div>
 	            <div class="group">
 	                <label for="username">First name</label>
-	                <div><input id="firstname" name="firstnameR" class="form-control required" type="textarea" placeholder="First Name"></div>
+	                <input id="firstname" name="firstnameR"  type="text" placeholder="First Name">
 	            </div>
 	            <div class="group">
 	                <label for="username">Lastname</label>
-	                <div><input id="lastname" name="lastnameR" class="form-control required" type="textarea" placeholder="Last Name"></div>
+	                <input id="lastname" name="lastnameR" type="text" placeholder="Last Name">
 	            </div>
 	           <div class="group">
 	                <label for="name">Password</label>
-	                <div><input id="password" name="passwordR" class="form-control required" type="password" placeholder="Password"></div>
+	                <input id="password" name="passwordR" c type="password" placeholder="Password">
 	            </div>
 	            <div class="group">
 	                <label for="name">Password again</label>
-	                <div><input id="passwordAgain" name="passwordAgainR" class="form-control required" type="password" placeholder="Password Again"></div>
+	               	<input id="passwordAgain" name="passwordAgainR"  type="password" placeholder="Password Again">
 	            </div>
+	          
 	            <div class="group submit">
 	                <label class="empty"></label>
-	                <div><input name="submitR" type="submit" value="Submit"/></div>
+	               <input name="submitR" type="submit" value="Submit"/>
+	            </div>
+	              <div class="group"> 
+					<div><a href="<?php echo $RELPATH . 'login.php'?>"><small>Al een account, log nu in!</small></a></div>
 	            </div>
 	            </tr>
+	        </div>
 	        </div>
 	        <div id="form-loading" class="hide"><i class="fa fa-circle-o-notch fa-spin"></i></div>
 	    </form>

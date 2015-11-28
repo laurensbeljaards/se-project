@@ -116,7 +116,7 @@ mysqli_close($conn);
 
 <br />
 <h1>Opdracht Wijzigen: </h1>
-<hr class="hr"/>
+<hr class="hr"/><hr class="hr"/>
 <br />
 <?php
 if($opdrid != 0){

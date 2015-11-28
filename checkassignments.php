@@ -154,8 +154,10 @@ mysqli_close($conn);
 </div>
 <br />
 <h1>Opdracht Nakijken: </h1>
-<hr class="hr"/>
+<hr class="hr"/><hr class="hr"/>
 <br />
+
+<div class="maininfo">
 
 <?php
 if(isset($_GET['opdr']) && isset($_GET['student'])){
