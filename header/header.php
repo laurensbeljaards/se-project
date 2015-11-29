@@ -22,14 +22,17 @@
 		if($conn->connect_errno) {
 			die('Could not connect: ' .$conn->connect_error);
 		}
-		$sql = "SELECT badgeid FROM student_badge WHERE username = '$username'";
+        //newly obtained badges appear on the left (order descending).
+		$sql = "SELECT s.badgeid, b.name FROM student_badge s, badges b WHERE s.badgeid = b.badgeid AND s.username = '$username' ORDER BY s.timestamp DESC";
 		$sqlBadges = $conn->query($sql);
 		$numberOfBadges = $sqlBadges->num_rows;
 		$badges;
+        $badgeNames;
 		if ($sqlBadges->num_rows > 0) {
             for($i=0; $i<$numberOfBadges; $i++){
 				$badgesSql = $sqlBadges->fetch_assoc();
 				$badges[$i] = $badgesSql["badgeid"];
+                $badgeNames[$i] = $badgesSql["name"];
 			}
 		}
 		mysqli_close($conn);
@@ -104,24 +107,31 @@
     </ul>
 <?php if($loggedInStudent == 1){?>
     <div class="badge-shell">
-        <div class="badgeBar" id="badgeBar"></div>
+        <div class="badgeBar" id="badgeBar" onclick="window.location='my_badges.php';"></div>
     </div>
 <?php }?>
 </div>
 
-
 <script>
 function fillBadgeBar() { //fills the badgebar according to the data from the database (above php code)
     <?php for($i = 0; $i < 20; $i++) { ?>
+        var a = document.createElement("a");
         var li = document.createElement("li");
         li.className = "badge";
         var badgeBar = document.getElementById("badgeBar");
         <?php if ($i < $numberOfBadges) { ?>
             li.style.backgroundImage = 'url(Badges/'+<?php echo $badges[$i]; ?>+'.jpg)';
-            <?php } else { ?>
-                li.style.backgroundImage = 'url(Badges/Locked_Icon.jpg)';
-                <?php } ?>
-        badgeBar.appendChild(li);
+            a.style.cursor = "pointer";
+            a.href = "my_badges.php";
+            //adds a dataset to each badge for showing the name on hover.
+            a.dataset["badgename"] = "<?php echo $badgeNames[$i]; ?>";
+        <?php } else { ?>
+            li.style.backgroundImage = 'url(Badges/Locked_Icon.jpg)';
+            li.style.cursor="help";
+            a.href = 'all_badges.php';
+        <?php } ?>
+        a.appendChild(li);
+        badgeBar.appendChild(a);
         <?php } ?>
 }
 fillBadgeBar(); //call the function
